@@ -4,10 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.example.a4_inner.MainFragment
-import com.example.a4_inner.R
 import com.example.a4_inner.databinding.ActivityNaviBinding
-import kotlinx.coroutines.MainScope
 
 
 private const val TAG_HOME = "home_fragment"
@@ -26,11 +23,11 @@ class NaviActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        setFragment(TAG_HOME, MainFragment())
+        setFragment(TAG_HOME, HomeFragment())
 
         binding.navigationView.setOnItemSelectedListener { item ->
             when(item.itemId) {
-                R.id.home -> setFragment(TAG_HOME, MainFragment())
+                R.id.home -> setFragment(TAG_HOME, HomeFragment())
                 R.id.bulletin -> setFragment(TAG_HOME, BulletinFragment())
                 R.id.timetable -> setFragment(TAG_TIMETABLE, TimetableFragment())
                 R.id.map-> setFragment(TAG_MAP, MapFragment())
