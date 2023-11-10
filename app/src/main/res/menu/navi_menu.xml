@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:title="홈"
+        android:icon="@drawable/ic_home"/>
+
+    <item
+        android:id="@+id/bulletin"
+        android:title="게시판"
+        android:icon="@drawable/ic_bulletin"/>
+
+    <item
+        android:id="@+id/timetable"
+        android:title="시간표"
+        android:icon="@drawable/ic_timetable"/>
+
+    <item
+        android:id="@+id/map"
+        android:title="지도"
+        android:icon="@drawable/ic_map"/>
+
+    <item
+        android:id="@+id/ar"
+        android:title="AR"
+        android:icon="@drawable/ic_ar"/>
+</menu>
