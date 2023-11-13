@@ -13,8 +13,11 @@
         android:theme="@style/Theme._4_inner"
         tools:targetApi="31">
         <activity
+            android:name=".LogInActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".NaviActivity"
             android:exported="true">
