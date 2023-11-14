@@ -68,7 +68,16 @@
                 android:text="LOGIN"
                 android:textSize="18sp"
                 app:cornerRadius="20dp"
-                android:layout_marginBottom="30dp"
+                />
+
+            <Button
+                android:id="@+id/signUpButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/register"
+                android:textSize="15dp"
+                android:textAlignment="center"
+                android:textColor="@color/lavender"
                 />
 
             <View
