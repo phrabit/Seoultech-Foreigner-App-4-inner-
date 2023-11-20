@@ -30,9 +30,10 @@ class NaviActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         //TODO 현재 유저 정보 받아오기
-        if(intent.hasExtra("fromLogin")) {
+        if(intent.getStringExtra("fromLogin") == "true") {
             if (user != null) {
                 Toast.makeText(this, "Welcome, ${user.displayName}!", Toast.LENGTH_SHORT).show()
+                intent.removeExtra("fromLogin")
             } else {
                 // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
 
