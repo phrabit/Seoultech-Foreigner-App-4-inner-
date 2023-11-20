@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerUserAdapter(private val items: ArrayList<UserData>) : RecyclerView.Adapter<RecyclerUserAdapter.ViewHolder>() {
+class RecyclerUserAdapter(private val items: ArrayList<Board>) : RecyclerView.Adapter<RecyclerUserAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
-        fun onItemClick(data: UserData, pos:Int)
+        fun onItemClick(data: Board, pos:Int)
     }
 
     private var listener: OnItemClickListener? = null
@@ -45,7 +45,7 @@ class RecyclerUserAdapter(private val items: ArrayList<UserData>) : RecyclerView
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private var view: View = v
 
-        fun bind(item: UserData) {
+        fun bind(item: Board) {
             // 수정된 부분: 뷰의 형식에 맞게 캐스팅
             val userItemTitleTextView: TextView = view.findViewById(R.id.item_title)
             val userItemContentsTextView: TextView = view.findViewById(R.id.comment_li)
