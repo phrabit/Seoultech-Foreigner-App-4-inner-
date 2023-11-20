@@ -30,10 +30,8 @@ class NaviActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         //TODO 현재 유저 정보 받아오기
-        auth = Firebase.auth
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            Toast.makeText(this, "Welcome, ${currentUser.displayName}!", Toast.LENGTH_SHORT).show()
+        if (user != null) {
+            Toast.makeText(this, "Welcome, ${user.displayName}!", Toast.LENGTH_SHORT).show()
         } else {
             // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
 
