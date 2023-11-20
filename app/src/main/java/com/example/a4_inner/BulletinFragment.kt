@@ -28,7 +28,7 @@ class BulletinFragment : Fragment() {
     private var param2: String? = null
     private lateinit var binding: FragmentBulletinBinding
     private lateinit var adapter: RecyclerUserAdapter
-    private var list = ArrayList<UserData>()
+    private var list = ArrayList<Board>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,28 +49,28 @@ class BulletinFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "1", "name 1"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "2", "name 2"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "3", "name 3"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "4", "name 4"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "5", "name 5"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "6", "name 6"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "7", "name 7"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "8", "name 8"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "9", "name 9"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "10", "name 10"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "11", "name 11"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "12", "name 12"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "13", "name 13"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "14", "name 14"))
-        list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "15", "name 15"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "1", "name 1"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "2", "name 2"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "3", "name 3"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "4", "name 4"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "5", "name 5"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "6", "name 6"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "7", "name 7"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "8", "name 8"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "9", "name 9"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "10", "name 10"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "11", "name 11"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "12", "name 12"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "13", "name 13"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "14", "name 14"))
+        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "15", "name 15"))
 
         val recyclerView: RecyclerView = binding.lstUser
 
         adapter = RecyclerUserAdapter(list)
 
         adapter.setOnItemClickListener(object : RecyclerUserAdapter.OnItemClickListener {
-            override fun onItemClick(data: UserData, pos: Int) {
+            override fun onItemClick(data: Board, pos: Int) {
                 val intent = Intent(requireContext(), Posting::class.java)
                 intent.putExtra("Title", data.title)
                 intent.putExtra("Contents", data.contents)
@@ -96,7 +96,7 @@ class BulletinFragment : Fragment() {
             Log.d("ITM", "Received Title: $title, Contents: $contents")
 
             if (!title.isNullOrBlank() && !contents.isNullOrBlank()) {
-                list.add(UserData(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, title, contents))
+                list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, title, contents))
                 adapter.notifyDataSetChanged()
             }
         } else {

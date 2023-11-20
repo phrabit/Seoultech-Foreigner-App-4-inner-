@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerCommentAdapter(private val commentList: ArrayList<UserData>) : RecyclerView.Adapter<RecyclerCommentAdapter.ViewHolder>() {
+class RecyclerCommentAdapter(private val commentList: ArrayList<Board>) : RecyclerView.Adapter<RecyclerCommentAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.comments_view, parent, false)
@@ -24,7 +24,7 @@ class RecyclerCommentAdapter(private val commentList: ArrayList<UserData>) : Rec
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(comment: UserData) {
+        fun bind(comment: Board) {
             val userIconImageView: ImageView = itemView.findViewById(R.id.imgUser_icon)
             val commentTextView: TextView = itemView.findViewById(R.id.comments)
 

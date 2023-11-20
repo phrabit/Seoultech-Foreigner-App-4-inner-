@@ -5,13 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a4_inner.databinding.ActivityPostingBinding
 
@@ -19,7 +14,7 @@ class Posting : AppCompatActivity() {
 
     lateinit var binding: ActivityPostingBinding
     private lateinit var commentAdapter: RecyclerCommentAdapter
-    private val commentList: ArrayList<UserData> = ArrayList()
+    private val commentList: ArrayList<Board> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +77,7 @@ class Posting : AppCompatActivity() {
         val imageDrawable: Drawable? = ContextCompat.getDrawable(this, drawableId)
 
         // 댓글 목록에 추가
-        val newComment = UserData(img = imageDrawable!!, title = "User", contents = commentText)
+        val newComment = Board(img = imageDrawable!!, title = "User", contents = commentText)
         commentList.add(newComment)
 
         // RecyclerView 갱신

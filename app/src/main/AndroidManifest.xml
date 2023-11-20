@@ -23,8 +23,6 @@
             android:name=".MainActivity"
             android:exported="false"/>
         <activity
-            android:name=".NaviActivity"
-
             android:name=".OnBoardingActivity"
 
             android:exported="true">
@@ -39,9 +37,6 @@
             android:exported="false" />
         <activity
             android:name=".LogInActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".NaviActivity"
