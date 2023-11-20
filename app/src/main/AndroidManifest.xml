@@ -23,12 +23,8 @@
             android:name=".MainActivity"
             android:exported="false"/>
         <activity
-<<<<<<< HEAD
             android:name=".OnBoardingActivity"
 
-=======
-            android:name=".NaviActivity"
->>>>>>> parent of 4d3bfc4 (Merge pull request #2 from NepTuPia/suho)
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,7 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
@@ -46,8 +41,6 @@
         <activity
             android:name=".NaviActivity"
             android:exported="false" />
-=======
->>>>>>> parent of 4d3bfc4 (Merge pull request #2 from NepTuPia/suho)
     </application>
 
 </manifest>

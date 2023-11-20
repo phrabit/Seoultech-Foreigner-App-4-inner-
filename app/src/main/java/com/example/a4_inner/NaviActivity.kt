@@ -1,10 +1,15 @@
 package com.example.a4_inner
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.a4_inner.databinding.ActivityNaviBinding
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 
 private const val TAG_HOME = "home_fragment"
@@ -15,7 +20,6 @@ private const val TAG_AR = "ar_fragment"
 
 class NaviActivity : AppCompatActivity() {
 
-<<<<<<< HEAD
     private lateinit var binding: ActivityNaviBinding
 
     //TODO 현재 유저
@@ -58,9 +62,6 @@ class NaviActivity : AppCompatActivity() {
             val uid = it.uid
         }
     }
-=======
-    private lateinit var binding : ActivityNaviBinding
->>>>>>> parent of 4d3bfc4 (Merge pull request #2 from NepTuPia/suho)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,10 +74,10 @@ class NaviActivity : AppCompatActivity() {
         binding.navigationView.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.home -> setFragment(TAG_HOME, HomeFragment())
-                R.id.bulletin -> setFragment(TAG_HOME, BulletinFragment())
+                R.id.bulletin -> setFragment(TAG_BULLETIN, BulletinFragment())
                 R.id.timetable -> setFragment(TAG_TIMETABLE, TimetableFragment())
-                R.id.map-> setFragment(TAG_MAP, MapFragment())
-                R.id.ar-> setFragment(TAG_AR, ArFragment())
+                R.id.map -> setFragment(TAG_MAP, MapFragment())
+                R.id.ar -> setFragment(TAG_AR, ArFragment())
             }
             true
         }
@@ -86,7 +87,7 @@ class NaviActivity : AppCompatActivity() {
         val manager: FragmentManager = supportFragmentManager
         val fragTransaction = manager.beginTransaction()
 
-        if (manager.findFragmentByTag(tag) == null){
+        if (manager.findFragmentByTag(tag) == null) {
             fragTransaction.add(R.id.mainFrameLayout, fragment, tag)
         }
 
@@ -97,11 +98,11 @@ class NaviActivity : AppCompatActivity() {
         val ar = manager.findFragmentByTag(TAG_AR)
 
 
-        if (home != null){
+        if (home != null) {
             fragTransaction.hide(home)
         }
 
-        if (bulletin != null){
+        if (bulletin != null) {
             fragTransaction.hide(bulletin)
         }
 
@@ -109,7 +110,7 @@ class NaviActivity : AppCompatActivity() {
             fragTransaction.hide(timetable)
         }
 
-        if (map != null){
+        if (map != null) {
             fragTransaction.hide(map)
         }
 
@@ -118,27 +119,23 @@ class NaviActivity : AppCompatActivity() {
         }
 
         if (tag == TAG_HOME) {
-            if (home!=null){
+            if (home != null) {
                 fragTransaction.show(home)
             }
-        }
-        else if (tag == TAG_BULLETIN) {
+        } else if (tag == TAG_BULLETIN) {
             if (bulletin != null) {
                 fragTransaction.show(bulletin)
             }
-        }
-        else if (tag == TAG_TIMETABLE){
-            if (timetable != null){
+        } else if (tag == TAG_TIMETABLE) {
+            if (timetable != null) {
                 fragTransaction.show(timetable)
             }
-        }
-        else if (tag == TAG_MAP){
-            if (map != null){
+        } else if (tag == TAG_MAP) {
+            if (map != null) {
                 fragTransaction.show(map)
             }
-        }
-        else if (tag == TAG_AR){
-            if (ar != null){
+        } else if (tag == TAG_AR) {
+            if (ar != null) {
                 fragTransaction.show(ar)
             }
         }
