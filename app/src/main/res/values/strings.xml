@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">4_inner</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="register"><u><i>I want to make account!</i></u></string>
+    <string name="default_web_client_id">337228876325-ujpjc29nef0jhtjcgkf1e4khssco2l6c.apps.googleusercontent.com</string>
 </resources>

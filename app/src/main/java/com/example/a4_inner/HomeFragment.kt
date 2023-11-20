@@ -2,11 +2,17 @@ package com.example.a4_inner
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.a4_inner.databinding.FragmentMainBinding
+import android.widget.Toast
+import com.example.a4_inner.databinding.FragmentHomeBinding
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,7 +31,7 @@ class HomeFragment : Fragment() {
     private var param2: String? = null
 
     // binding for fragment
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: FragmentHomeBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
@@ -35,23 +41,41 @@ class HomeFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tempButton.setOnClickListener {
-            // navigating to the main activity
-            val intent = Intent(activity, LogInActivity::class.java) // different way of navigating as its fragment
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        binding.refreshButton.setOnClickListener {
+            // Loading intent on fragment(from NaviActivity)
+//            auth = FirebaseAuth.getInstance()
+            val intent = Intent(activity, LogInActivity::class.java);
+//            val email = auth.currentUser?.email
+//            val displayName = intent.getStringExtra("name")
+//            binding.textView.text = email + "\n" + displayName
+
+            val info = intent.getStringExtra("sentInfo")
+            binding.textView.text = info
+        }
+
+        binding.logOutButton.setOnClickListener {
+            // sign out
+            try {
+                Firebase.auth.signOut()
+                Log.d("ITM","successfully signed out")
+            } catch (e: ApiException) {
+                Log.d("ITM","Sign out failed")
+            }
+            val intent = Intent(activity, LogInActivity::class.java);
             startActivity(intent)
         }
     }
