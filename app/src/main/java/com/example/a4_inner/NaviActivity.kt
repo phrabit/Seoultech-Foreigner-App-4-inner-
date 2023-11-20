@@ -11,6 +11,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
+
 private const val TAG_HOME = "home_fragment"
 private const val TAG_BULLETIN = "bulletin_fragment"
 private const val TAG_TIMETABLE = "timetable_fragment"
@@ -73,9 +74,9 @@ class NaviActivity : AppCompatActivity() {
         setFragment(TAG_HOME, HomeFragment())
 
         binding.navigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
+            when(item.itemId) {
                 R.id.home -> setFragment(TAG_HOME, HomeFragment())
-                R.id.bulletin -> setFragment(TAG_HOME, BulletinFragment())
+                R.id.bulletin -> setFragment(TAG_BULLETIN, BulletinFragment())
                 R.id.timetable -> setFragment(TAG_TIMETABLE, TimetableFragment())
                 R.id.map -> setFragment(TAG_MAP, MapFragment())
                 R.id.ar -> setFragment(TAG_AR, ArFragment())
