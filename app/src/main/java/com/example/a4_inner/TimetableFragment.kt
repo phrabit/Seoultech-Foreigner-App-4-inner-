@@ -10,13 +10,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import com.example.a4_inner.databinding.ActivityMainBinding
 import com.example.a4_inner.databinding.FragmentTimetableBinding
 
 // TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
@@ -123,6 +120,5 @@ class TimetableFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
-
     }
 }
