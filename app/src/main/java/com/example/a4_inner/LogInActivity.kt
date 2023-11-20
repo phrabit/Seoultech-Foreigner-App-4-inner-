@@ -78,6 +78,8 @@ class LogInActivity : AppCompatActivity() {
 
         binding.goNavi.setOnClickListener {
             val intent = Intent(this, NaviActivity::class.java)
+            // Optional: Add any extra information to the intent
+            intent.putExtra("fromLogin", "true")
             startActivity(intent) // Add this line to start the activity
             finish()
         }
@@ -99,6 +101,7 @@ class LogInActivity : AppCompatActivity() {
     private fun updateUI(user: FirebaseUser?) { //update ui code here
         if (user != null) {
             val intent = Intent(this, NaviActivity::class.java)
+            intent.putExtra("fromLogin", "true")
             startActivity(intent)
             finish()
         }
