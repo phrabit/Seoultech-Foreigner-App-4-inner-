@@ -30,21 +30,21 @@ class NaviActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         //TODO 현재 유저 정보 받아오기
-        if (user != null) {
-            Toast.makeText(this, "Welcome, ${user.displayName}!", Toast.LENGTH_SHORT).show()
-        } else {
-            // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
-
-            // Create an Intent to start the LoginActivity
-            val intent = Intent(this, LogInActivity::class.java)
-
-            // Optional: Add any extra information to the intent
-            // intent.putExtra("key", "value")
-
-            // Start the LoginActivity
-            startActivity(intent)
-            finish()
-        }
+//        if (user != null) {
+//            Toast.makeText(this, "Welcome, ${user.displayName}!", Toast.LENGTH_SHORT).show()
+//        } else {
+//            // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
+//
+//            // Create an Intent to start the LoginActivity
+//            val intent = Intent(this, LogInActivity::class.java)
+//
+//            // Optional: Add any extra information to the intent
+//            // intent.putExtra("key", "value")
+//
+//            // Start the LoginActivity
+//            startActivity(intent)
+//            finish()
+//        }
 
 
         user?.let {

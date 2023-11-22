@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 
 // 목록엔 제목 컨텐츠을 보여줄것
 data class Board(
-    var img: Drawable,
+    var img: Drawable?,
     var title: String,
     val contents: String,
 )

@@ -9,12 +9,46 @@
         android:id="@+id/editClassName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:hint="Class Name"/>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/dayOfWeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:id="@+id/startPeriod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:id="@+id/endPeriod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
     <Spinner
-        android:id="@+id/spinnerClassRoom"
+        android:id="@+id/spinnerBuilding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Class Room"/>
+        android:layout_marginBottom="10dp"
+        android:hint="Class Room" />
+
+    <EditText
+        android:id="@+id/editClassroom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Class Name"/>
 
 </LinearLayout>

@@ -8,10 +8,10 @@
 
     <FrameLayout
         android:id="@+id/mainFrameLayout"
-        android:layout_width="414dp"
-        android:layout_height="732dp"
-        tools:layout_editor_absoluteX="-2dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/navigationView"
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 

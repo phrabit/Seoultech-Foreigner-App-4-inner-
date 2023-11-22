@@ -6,17 +6,23 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.example.a4_inner.databinding.ActivityPostBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
 class Post : AppCompatActivity() {
 
     lateinit var binding: ActivityPostBinding
+//    lateinit var recyclerView: RecyclerView
+//    lateinit var adapter: RecyclerUserAdapter
+//    private val firestoreCollection = "FirebaseBoard_practice"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         binding.completeBtn.setOnClickListener {
             val title = binding.titleInsert.text.toString()
@@ -41,6 +47,26 @@ class Post : AppCompatActivity() {
                 // 데이터가 비어있을 경우 사용자에게 알림 등을 표시할 수 있음
                 Toast.makeText(this@Post, "Please enter both title and contents", Toast.LENGTH_SHORT).show()
             }
+
+            setDocument(
+                FirebaseBoard(
+                    title = "$title",
+                    contents = "$contents"
+                )
+            )
         }
+    }
+
+    private fun setDocument(data: FirebaseBoard) {
+        FirebaseFirestore.getInstance()
+            .collection("FirebaseBoard_practice")
+            .document(data.title)
+            .set(data)
+//            .addOnSuccessListener {
+//                binding.textResult.text = "success!"
+//            }
+//            .addOnFailureListener {
+//                binding.textResult.text = "fail!"
+//            }
     }
 }
