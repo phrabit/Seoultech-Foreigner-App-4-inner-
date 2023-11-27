@@ -40,6 +40,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":unityLibrary"))
+    implementation(fileTree(mapOf("dir" to File("\\unityLibrary", "libs"), "include" to listOf("*.jar"))))
+
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-analytics")
