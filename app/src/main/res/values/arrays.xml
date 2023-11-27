@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="universityMajor">
+        <item>ITM</item>
+        <item>MSDE</item>
+        <item>GTM</item>
+    </string-array>
+
+    <string-array name="year">
+        <item>2023</item>
+    </string-array>
+
+    <string-array name="term">
+        <item>1학기</item>
+        <item>2학기</item>
+    </string-array>
+
+    <string-array name="graduateArea">
+        <item>일반대학원</item>
+    </string-array>
+
+    <string-array name="universityArea">
+        <item>교양및기타</item>
+        <item>전공</item>
+    </string-array>
+
+    <string-array name="graduateMajor">
+        <item>ITM</item>
+        <item>MSDE</item>
+        <item>GTM</item>
+    </string-array>
+
+    <string-array name="universityRefinementMajor">
+        <item>교양1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+
+    </string-array>
+
+
+
+</resources>
