@@ -1,13 +1,17 @@
 package com.example.a4_inner
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.example.a4_inner.databinding.FragmentHomeBinding
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Firebase
@@ -54,18 +58,22 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //  Assuming you have the user's photo URI stored in a variable named photoUri
+        val photoUrl: Uri? = CurrentUser.getPhotoUrl
 
-        binding.refreshButton.setOnClickListener {
-            // Loading intent on fragment(from NaviActivity)
-//            auth = FirebaseAuth.getInstance()
-            val intent = Intent(activity, LogInActivity::class.java);
-//            val email = auth.currentUser?.email
-//            val displayName = intent.getStringExtra("name")
-//            binding.textView.text = email + "\n" + displayName
+        // Reference to the ImageView
+        val userPhotoImageView: ImageView = binding.userPhotoImageView
+        val userNameText: TextView = binding.textView
 
-            val info = intent.getStringExtra("sentInfo")
-            binding.textView.text = info
-        }
+        userNameText.text = CurrentUser.getName
+
+        // Load the user's photo into the ImageView using Glide
+        Glide.with(this)
+            .load(photoUrl)
+            .placeholder(R.drawable.user) // Placeholder image while loading
+            .error(R.drawable.user) // Error image if loading fails
+            .circleCrop()
+            .into(userPhotoImageView)
 
         binding.logOutButton.setOnClickListener {
             // sign out
@@ -98,11 +106,12 @@ class HomeFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
+            CourseFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
+
     }
 }
