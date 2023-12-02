@@ -1,6 +1,7 @@
 package com.example.a4_inner
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -41,6 +42,21 @@ class NaviActivity : AppCompatActivity() {
         binding = ActivityNaviBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setFragment(TAG_HOME, HomeFragment())
+
+        binding.cameraBtn.setOnClickListener{
+            val packageName = "com.google.android.apps.translate"
+            val intent = packageManager.getLaunchIntentForPackage(packageName)
+            if (intent != null) {
+                // 앱이 설치되어 있으면 앱 실행
+                startActivity(intent)
+            } else {
+                // 앱이 설치되어 있지 않으면 Play Store에서 앱 페이지로 이동
+                val marketUri = Uri.parse("market://details?id=$packageName")
+                val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
+                startActivity(marketIntent)
+            }
+
+        }
 
         binding.navigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {

@@ -42,6 +42,9 @@
         <activity
             android:name=".NaviActivity"
             android:exported="false" />
+        <meta-data
+            android:name="com.kakao.vectormap.APP_KEY"
+            android:value="5a91ee5ecf7ed2a612a2c98d12aac9fc"/>
     </application>
 
 </manifest>
