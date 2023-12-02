@@ -40,11 +40,4 @@ class OnBoardingActivity : AppCompatActivity() {
 
         setContentView(binding.root)
     }
-
-    //TODO check if it is first time opening the app or not
-    fun onBoardingVerify() {
-        // if it is first time, onboarding page show
-
-        // if it is not, directly navigate to login page
-    }
 }

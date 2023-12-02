@@ -36,6 +36,7 @@ object CurrentUser {
 
     private lateinit var userRef: DocumentReference
 
+    // getting user data from firebase firestore
     fun initializeUser(uid: String, name: String?, creationDate: Timestamp, email: String?, photoUrl: Uri?) {
         this._userUid = uid
         this._name = name
