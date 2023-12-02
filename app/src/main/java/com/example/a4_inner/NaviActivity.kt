@@ -83,9 +83,6 @@ class NaviActivity : AppCompatActivity() {
                 // Create an Intent to start the LoginActivity
                 val intent = Intent(this, LogInActivity::class.java)
 
-                // Optional: Add any extra information to the intent
-                // intent.putExtra("key", "value")
-
                 // Start the LoginActivity
                 startActivity(intent)
                 finish()
@@ -151,36 +148,5 @@ class NaviActivity : AppCompatActivity() {
         }
         fragTransaction.commitAllowingStateLoss()
     }
-
-//    private fun setupFirestoreListener() {
-//        snapshotListener = userDocRef.addSnapshotListener { snapshot, e ->
-//            if (e != null) {
-//                Log.e("ITM", "Firestore listen failed.", e)
-//                return@addSnapshotListener
-//            }
-//
-//            // Check if the changes are from local writes
-//            val source = if (snapshot != null && snapshot.metadata.hasPendingWrites()) {
-//                "Local"
-//            } else {
-//                "Server"
-//            }
-//
-//            // Log the data based on whether it's a local or server change
-//            if (snapshot != null && snapshot.exists()) {
-//                //TODO userData 밖에 구현해서 활용(homeFragment instance로 전달)
-//
-//                val userData = snapshot.toObject(UserData::class.java)
-//
-//                userData?.let {
-//                    Log.d("ITM", "$source data: UserUid=${it.userUid}, Name=${it.name}, CreationDate=${it.creationDate}")
-//                    // User data transmission(각 fragment 별로 구현해놓기)
-////                    HomeFragment.newInstance(it)
-//                }
-//            } else {
-//                Log.d("ITM", "$source data: null")
-//            }
-//        }
-//    }
 }
 

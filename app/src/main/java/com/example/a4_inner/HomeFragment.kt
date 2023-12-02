@@ -1,5 +1,6 @@
 package com.example.a4_inner
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -85,6 +86,26 @@ class HomeFragment : Fragment() {
             }
             val intent = Intent(activity, LogInActivity::class.java);
             startActivity(intent)
+        }
+
+        if(PreferenceHelper.getBoolean(requireContext())) {
+            binding.onBoardingText.text = "onBoarding: ON"
+        }
+
+        // Get pref and set the initial value
+        val initialSwitchState = PreferenceHelper.getBoolean(requireContext())
+        binding.onBoardingToggle.isChecked = initialSwitchState
+
+        // Update the pref as toggle changes
+        binding.onBoardingToggle.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceHelper.setBoolean(requireContext(), isChecked)
+            if(isChecked) {
+                // If toggle true -> onBoarding ON
+                binding.onBoardingText.text = "onBoarding: ON"
+            } else {
+                // If toggle false -> onBoarding OFF
+                binding.onBoardingText.text = "onBoarding: OFF"
+            }
         }
     }
 
