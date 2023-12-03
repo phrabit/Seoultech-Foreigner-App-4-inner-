@@ -1,31 +1,30 @@
 package com.example.a4_inner
 
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Intent
-import android.content.IntentSender
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.a4_inner.databinding.ActivityLogInBinding
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.Date
 
 
 class LogInActivity : AppCompatActivity() {
@@ -38,7 +37,7 @@ class LogInActivity : AppCompatActivity() {
 //    lateinit var loginButton: Button
 
     // google login
-    private lateinit var auth: FirebaseAuth
+    private val auth = Firebase.auth
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private val launcher =
@@ -68,8 +67,6 @@ class LogInActivity : AppCompatActivity() {
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        auth = Firebase.auth
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -78,6 +75,8 @@ class LogInActivity : AppCompatActivity() {
 
         binding.goNavi.setOnClickListener {
             val intent = Intent(this, NaviActivity::class.java)
+            // Optional: Add any extra information to the intent
+            intent.putExtra("fromLogin", "true")
             startActivity(intent) // Add this line to start the activity
             finish()
         }
@@ -98,7 +97,9 @@ class LogInActivity : AppCompatActivity() {
     // 로그인 시 페이지를 변경하는 코드(UI update)
     private fun updateUI(user: FirebaseUser?) { //update ui code here
         if (user != null) {
+            userAssign(user)
             val intent = Intent(this, NaviActivity::class.java)
+            intent.putExtra("fromLogin", "true")
             startActivity(intent)
             finish()
         }
@@ -125,5 +126,45 @@ class LogInActivity : AppCompatActivity() {
                     updateUI(null)
                 }
             }
+    }
+
+    private fun userAssign(user: FirebaseUser) {
+        // user object initialization(Singleton pattern) + asynchronization
+        CurrentUser.initializeUser(user.uid, user.displayName, Timestamp(Date(user.metadata!!.creationTimestamp)), user.email, user.photoUrl)
+        // DB write
+        // Access a Cloud Firestore instance
+        val db = Firebase.firestore
+        // check if there's already document for the user
+        val userDocRef = db.collection("users").document(user.uid)
+        // Check if the document exists
+        userDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                // Document does not exist = First time login
+                if (!documentSnapshot.exists()) {
+                    // making data class for uploading into DB
+                    val userData = UserData(
+                        user.uid,
+                        user.displayName!!,
+                        Timestamp(Date(user.metadata!!.creationTimestamp)),
+                        user.email!!,
+                        user.photoUrl
+                    )
+                    // Uploading user data for DB
+                    db.collection("users").document(user.uid).set(userData)
+                        .addOnSuccessListener {
+                            Log.d("ITM", "DocumentSnapshot added with ID: ${user.uid}")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("ITM", "Error adding document", e)
+                        }
+                } else {
+                    // X First time login -> just simple login
+                    Log.d("ITM","User exists")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("ITM","error occurred during loading firestore document in userAssign(): $e")
+            }
+
     }
 }

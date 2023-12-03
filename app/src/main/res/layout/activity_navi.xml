@@ -8,12 +8,26 @@
 
     <FrameLayout
         android:id="@+id/mainFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/navigationView"
+        android:layout_width="414dp"
+        android:layout_height="732dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </FrameLayout>
+
+    <ImageView
+        android:id="@+id/cameraBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.050000012"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigationView"
@@ -24,23 +38,22 @@
         app:itemIconTint="@drawable/menu_click_color"
         app:itemTextColor="@drawable/menu_click_color"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/navi_menu"
         tools:ignore="MissingConstraints" />
 
-
-<!--    <ImageButton-->
-<!--        android:id="@+id/settingBtn"-->
-<!--        android:layout_width="51dp"-->
-<!--        android:layout_height="56dp"-->
-<!--        android:adjustViewBounds="true"-->
-<!--        android:cropToPadding="false"-->
-<!--        android:src="@drawable/ic_setting"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.955"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.023" />-->
-
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/settingBtn"-->
+    <!--        android:layout_width="51dp"-->
+    <!--        android:layout_height="56dp"-->
+    <!--        android:adjustViewBounds="true"-->
+    <!--        android:cropToPadding="false"-->
+    <!--        android:src="@drawable/ic_setting"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.955"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintVertical_bias="0.023" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

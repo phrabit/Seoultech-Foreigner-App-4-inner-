@@ -1,10 +1,26 @@
 package com.example.a4_inner
 
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.a4_inner.databinding.FragmentMapBinding
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
+import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.MapView
+import com.kakao.vectormap.route.RouteLineLayer
+import com.kakao.vectormap.route.RouteLineOptions
+import com.kakao.vectormap.route.RouteLineSegment
+import com.kakao.vectormap.route.RouteLineStyle
+import com.kakao.vectormap.route.RouteLineStyles
+import com.kakao.vectormap.route.RouteLineStylesSet
+import java.util.Arrays
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,13 +36,15 @@ class MapFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    lateinit var binding: FragmentMapBinding
+    lateinit var layer: RouteLineLayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     override fun onCreateView(
@@ -34,7 +52,60 @@ class MapFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        binding = FragmentMapBinding.inflate(inflater, container, false)
+        val mapView: MapView = binding.mapView
+
+        binding.pathFindBtn.setOnClickListener{
+            val crt_latlng = LatLng.from(37.630293, 127.076929)
+            val path = Dijkstra.dijkstra(crt_latlng, UniversitySites.node5)
+            var latlngs:MutableList<LatLng> = mutableListOf(crt_latlng)
+            for(node in path) {
+                latlngs.add(node.location)
+            }
+            val stylesSet: RouteLineStylesSet = RouteLineStylesSet.from(
+                "blueStyles",
+                    RouteLineStyles.from(RouteLineStyle.from(30.toFloat(), Color.BLUE))
+            )
+
+            val segment = RouteLineSegment.from(
+                latlngs
+            )
+                .setStyles(stylesSet.getStyles(0))
+
+            val options = RouteLineOptions.from(segment)
+                .setStylesSet(stylesSet)
+
+            val routeLine = layer.addRouteLine(options)
+        }
+
+        mapView.start(object : MapLifeCycleCallback() {
+
+            override fun onMapDestroy() {
+                // 지도 API 가 정상적으로 종료될 때 호출됨
+            }
+
+            override fun onMapError(error: Exception) {
+                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
+                Log.d("map", "error:" + error)
+            }
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(kakaoMap: KakaoMap) {
+                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                Log.d("map", "successfully!")
+                layer = kakaoMap.getRouteLineManager()!!.getLayer()
+            }
+
+            override fun getPosition(): LatLng {
+                return LatLng.from(37.631122, 127.077547);
+            }
+
+            override fun getZoomLevel(): Int {
+                return 18
+            }
+
+
+        })
+        return binding.root
     }
 
     companion object {

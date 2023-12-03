@@ -1,7 +1,9 @@
 package com.example.a4_inner
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -10,6 +12,10 @@ import com.example.a4_inner.databinding.ActivityNaviBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.firestore
 
 
 private const val TAG_HOME = "home_fragment"
@@ -22,10 +28,8 @@ class NaviActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNaviBinding
 
-    //TODO 현재 유저
     // variable for GOOGLE login
-    private lateinit var auth: FirebaseAuth
-    private val user = Firebase.auth.currentUser
+//    private lateinit var auth: FirebaseAuth
 
     override fun onStart() {
         super.onStart()
@@ -65,14 +69,28 @@ class NaviActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityNaviBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
         setFragment(TAG_HOME, HomeFragment())
 
+        binding.cameraBtn.setOnClickListener{
+            val packageName = "com.google.android.apps.translate"
+            val intent = packageManager.getLaunchIntentForPackage(packageName)
+            if (intent != null) {
+                // 앱이 설치되어 있으면 앱 실행
+                startActivity(intent)
+            } else {
+                // 앱이 설치되어 있지 않으면 Play Store에서 앱 페이지로 이동
+                val marketUri = Uri.parse("market://details?id=$packageName")
+                val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
+                startActivity(marketIntent)
+            }
+
+        }
+
         binding.navigationView.setOnItemSelectedListener { item ->
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.home -> setFragment(TAG_HOME, HomeFragment())
                 R.id.bulletin -> setFragment(TAG_BULLETIN, BulletinFragment())
                 R.id.timetable -> setFragment(TAG_TIMETABLE, TimetableFragment())
@@ -80,6 +98,29 @@ class NaviActivity : AppCompatActivity() {
                 R.id.ar -> setFragment(TAG_AR, ArFragment())
             }
             true
+        }
+
+        // User verification
+        // 만약 로그인 액티비티에서 넘어왔다면
+        if (intent.getStringExtra("fromLogin") == "true") {
+            val userAuth = Firebase.auth.currentUser
+            if (userAuth != null) {
+                Toast.makeText(this, "Welcome, ${CurrentUser.getName}!", Toast.LENGTH_SHORT).show()
+                intent.removeExtra("fromLogin")
+                Log.d("ITM","PhotoUrl: ${CurrentUser.getPhotoUrl}")
+            } else {
+                // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
+
+                // Create an Intent to start the LoginActivity
+                val intent = Intent(this, LogInActivity::class.java)
+
+                // Optional: Add any extra information to the intent
+                // intent.putExtra("key", "value")
+
+                // Start the LoginActivity
+                startActivity(intent)
+                finish()
+            }
         }
     }
 
@@ -139,7 +180,38 @@ class NaviActivity : AppCompatActivity() {
                 fragTransaction.show(ar)
             }
         }
-
         fragTransaction.commitAllowingStateLoss()
     }
+
+//    private fun setupFirestoreListener() {
+//        snapshotListener = userDocRef.addSnapshotListener { snapshot, e ->
+//            if (e != null) {
+//                Log.e("ITM", "Firestore listen failed.", e)
+//                return@addSnapshotListener
+//            }
+//
+//            // Check if the changes are from local writes
+//            val source = if (snapshot != null && snapshot.metadata.hasPendingWrites()) {
+//                "Local"
+//            } else {
+//                "Server"
+//            }
+//
+//            // Log the data based on whether it's a local or server change
+//            if (snapshot != null && snapshot.exists()) {
+//                //TODO userData 밖에 구현해서 활용(homeFragment instance로 전달)
+//
+//                val userData = snapshot.toObject(UserData::class.java)
+//
+//                userData?.let {
+//                    Log.d("ITM", "$source data: UserUid=${it.userUid}, Name=${it.name}, CreationDate=${it.creationDate}")
+//                    // User data transmission(각 fragment 별로 구현해놓기)
+////                    HomeFragment.newInstance(it)
+//                }
+//            } else {
+//                Log.d("ITM", "$source data: null")
+//            }
+//        }
+//    }
 }
+
