@@ -11,6 +11,18 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4_inner.databinding.FragmentBulletinBinding
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.awaitAll
+import java.security.Timestamp
+import java.util.Date
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +41,7 @@ class BulletinFragment : Fragment() {
     private lateinit var binding: FragmentBulletinBinding
     private lateinit var adapter: RecyclerUserAdapter
     private var list = ArrayList<Board>()
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,32 +51,26 @@ class BulletinFragment : Fragment() {
         }
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBulletinBinding.inflate(inflater, container, false)
+
+        // Firestore 초기화
+        firestore = FirebaseFirestore.getInstance()
+
+        // Firestore에서 데이터 가져와 RecyclerView 업데이트
+        fetchDataFromFirestore()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "1", "name 1"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "2", "name 2"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "3", "name 3"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "4", "name 4"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "5", "name 5"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "6", "name 6"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "7", "name 7"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "8", "name 8"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "9", "name 9"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "10", "name 10"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "11", "name 11"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "12", "name 12"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "13", "name 13"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "14", "name 14"))
-        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "15", "name 15"))
+//        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "1", "name 1"))
 
         val recyclerView: RecyclerView = binding.lstUser
 
@@ -74,6 +81,7 @@ class BulletinFragment : Fragment() {
                 val intent = Intent(requireContext(), Posting::class.java)
                 intent.putExtra("Title", data.title)
                 intent.putExtra("Contents", data.contents)
+                intent.putExtra("PostId", data.documentId)  // Document Id를 Intent에 추가
                 startActivity(intent)
             }
         })
@@ -90,21 +98,83 @@ class BulletinFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
-            val title = data?.getStringExtra("Title")
-            val contents = data?.getStringExtra("Contents")
+            val boardData = data?.getSerializableExtra("boardData") as? Board
 
-            Log.d("ITM", "Received Title: $title, Contents: $contents")
+            if (boardData != null) {
+                // Check if the boardData already exists in the list
+                val existingBoard = list.find { it.title == boardData.title && it.contents == boardData.contents }
 
-            if (!title.isNullOrBlank() && !contents.isNullOrBlank()) {
-                list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, title, contents))
-                adapter.notifyDataSetChanged()
+                if (existingBoard != null) {
+                    // Update the existing board in the list
+                    existingBoard.title = boardData.title
+                    existingBoard.contents = boardData.contents
+                    adapter.notifyDataSetChanged()
+                } else {
+                    // Add the new boardData to the list
+                    addNewItem(boardData)
+                }
             }
         } else {
             Log.d("ITM", "Invalid requestCode or resultCode: requestCode=$requestCode, resultCode=$resultCode")
         }
     }
 
+    // Firestore에서 데이터를 실시간으로 가져오는 함수
+    fun fetchDataFromFirestore() {
+        MainScope().launch {
+            firestore.collection("Board")
+                .orderBy("creationTime", Query.Direction.DESCENDING)
+                .addSnapshotListener { snapshot, exception ->
+                    if (exception != null) {
+                        Log.e("ITM", "Error getting documents: ", exception)
+                        return@addSnapshotListener
+                    }
 
+                    if (snapshot != null) {
+                        val newDataList = ArrayList<Board>()
+
+                        for (document in snapshot) {
+                            // Firestore 문서를 데이터 모델로 변환 (이 경우 Board)
+                            val title = document.getString("title")
+                            val contents = document.getString("contents")
+                            val user_id = document.getString("user_id")
+
+                            if (!title.isNullOrBlank() && !contents.isNullOrBlank() && !user_id.isNullOrBlank()) {
+                                newDataList.add(
+                                    Board(
+                                        img = R.drawable.user,
+                                        title = title!!,
+                                        contents = contents!!,
+                                        user_id = user_id!!,
+                                        documentId = document.id // 문서 ID를 저장합니다.
+                                    )
+                                )
+                            }
+                        }
+
+                        // RecyclerView 데이터 업데이트
+                        list.clear()
+                        list.addAll(newDataList)
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        Log.d("ITM", "Current data: null")
+                    }
+                }
+        }
+    }
+
+
+
+    fun addNewItem(item: Board) {
+        // RecyclerView의 맨 위에 아이템 추가
+        list.add(0, item)
+        adapter.notifyItemInserted(0)
+    }
+
+    // public 메서드를 통해 adapter 반환
+    fun getAdapter(): RecyclerUserAdapter {
+        return adapter
+    }
 
     companion object {
         const val POST_ACTIVITY_REQUEST_CODE = 1

@@ -31,42 +31,6 @@ class NaviActivity : AppCompatActivity() {
     // variable for GOOGLE login
 //    private lateinit var auth: FirebaseAuth
 
-    override fun onStart() {
-        super.onStart()
-        //TODO 현재 유저 정보 받아오기
-//        if (user != null) {
-//            Toast.makeText(this, "Welcome, ${user.displayName}!", Toast.LENGTH_SHORT).show()
-//        } else {
-//            // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
-//
-//            // Create an Intent to start the LoginActivity
-//            val intent = Intent(this, LogInActivity::class.java)
-//
-//            // Optional: Add any extra information to the intent
-//            // intent.putExtra("key", "value")
-//
-//            // Start the LoginActivity
-//            startActivity(intent)
-//            finish()
-//        }
-
-
-        user?.let {
-            // Name, email address, and profile photo Url
-            val name = it.displayName
-            val email = it.email
-            val photoUrl = it.photoUrl
-
-            // Check if user's email is verified
-            val emailVerified = it.isEmailVerified
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            val uid = it.uid
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

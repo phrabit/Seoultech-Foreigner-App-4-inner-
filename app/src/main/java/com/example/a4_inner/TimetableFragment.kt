@@ -1,6 +1,7 @@
 package com.example.a4_inner
 
 import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -44,12 +45,29 @@ class TimetableFragment : Fragment() {
         binding = FragmentTimetableBinding.inflate(inflater, container, false)
 
         binding.addBtn.setOnClickListener {
-
             // 입력할 수 있는 팝업창이 나오도록 하기
             showAddClassDialog()
-
         }
         return binding.root
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        // Shared Preferences에서 강의 정보 불러오기
+        val sharedPreferences = requireActivity().getSharedPreferences("Timetable", Context.MODE_PRIVATE)
+        for (day in listOf("monday", "tuesday", "wednesday", "thursday", "friday")) {
+            for (period in 1..9) {
+                val info = sharedPreferences.getString("$day$period", null)
+                if (info != null) {
+                    val splitInfo = info.split("\n")
+                        if (splitInfo.size >= 3) {
+                            applyBackgroundColor(day, period, period, splitInfo[0], splitInfo[1], splitInfo[2])
+                        }
+                }
+            }
+        }
     }
 
     private fun showAddClassDialog() {
@@ -97,8 +115,13 @@ class TimetableFragment : Fragment() {
             val selectedClassRoom = spinnerClassRoom.selectedItem.toString()
             val classroom = editClassroom.text.toString()
 
-            // 강의 이름(className)과 선택된 강의실(selectedClassRoom) 사용
-            // ...
+            // 강의 정보를 Shared Preferences에 저장
+            val sharedPreferences = requireActivity().getSharedPreferences("Timetable", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            for (period in selectedStartPeriod.toInt()..selectedEndPeriod.toInt()) {
+                editor.putString("$selectedDayOfWeek$period", "$className\n$selectedClassRoom $classroom")
+            }
+            editor.apply()
 
             // TimetableFragment에 메서드를 호출하여 선택된 정보를 이용하여 셀에 색칠
             applyBackgroundColor(selectedDayOfWeek, selectedStartPeriod.toInt(), selectedEndPeriod.toInt(), className, selectedClassRoom, classroom)
@@ -119,6 +142,7 @@ class TimetableFragment : Fragment() {
         // TimetableFragment의 onCreateView에서 Timetable의 각 셀에 해당하는 ID를 찾아 배경색을 변경합니다.
         // 여기서는 간단한 예시로 View를 찾아 직접 배경색 및 텍스트를 변경하도록 하였습니다.
         val rootView = view
+        var textFlag = false
         if (rootView != null) {
             for (period in startPeriod..endPeriod) {
                 val cellId = "$dayOfWeek$period"
@@ -126,9 +150,14 @@ class TimetableFragment : Fragment() {
 
                 if (cellView is TextView) {
                     // 해당 셀이 TextView로 캐스팅 가능한 경우에만 텍스트 및 배경색 변경
-                    cellView.text = "$className\n$selectedClassRoom $classRoom"
+                    if(!textFlag){
+                        cellView.text = "$className\n$selectedClassRoom $classRoom"
+                        textFlag = true
+                    }
+
                     cellView.setBackgroundColor(Color.YELLOW) // 여기에서는 노란색으로 설정했습니다. 필요에 따라 수정하세요.
                     cellView.setTextColor(Color.BLUE)
+
                 }
             }
         }

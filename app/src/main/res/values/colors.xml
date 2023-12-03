@@ -5,4 +5,8 @@
     <color name="Gold">#FFFFD700</color>
     <color name="magenta">#FF00FF</color>
     <color name="lavender">#8692f7</color>
+    <color name="st_red">#a20008</color>
+    <color name="st_blue">#0a144c</color>
+    <color name="st_gray">#787878</color>
+    <color name="st_white">#f5f5f5</color>
 </resources>
