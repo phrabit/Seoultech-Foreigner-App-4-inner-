@@ -1,5 +1,6 @@
 package com.example.a4_inner
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -50,8 +51,13 @@ class NaviActivity : AppCompatActivity() {
                 val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
                 startActivity(marketIntent)
             }
-
         }
+
+        binding.myPageBtn.setOnClickListener {
+            val intent = Intent(this, MyPageActivity::class.java)
+            startActivity(intent)
+        }
+
 
         binding.navigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {

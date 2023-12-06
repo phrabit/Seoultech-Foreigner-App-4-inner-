@@ -7,7 +7,7 @@
     tools:context=".updatePost">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/nameTxt"
         android:layout_width="233dp"
         android:layout_height="42dp"
         android:text="Update the Post"

@@ -15,6 +15,9 @@
         android:theme="@style/Theme._4_inner"
         tools:targetApi="31">
         <activity
+            android:name=".MyPageActivity"
+            android:exported="false" />
+        <activity
             android:name=".updatePost"
             android:exported="false" />
         <activity
@@ -44,9 +47,10 @@
         <activity
             android:name=".NaviActivity"
             android:exported="false" />
+
         <meta-data
             android:name="com.kakao.vectormap.APP_KEY"
-            android:value="5a91ee5ecf7ed2a612a2c98d12aac9fc"/>
+            android:value="5a91ee5ecf7ed2a612a2c98d12aac9fc" />
     </application>
 
 </manifest>

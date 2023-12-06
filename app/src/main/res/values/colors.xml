@@ -8,5 +8,5 @@
     <color name="st_red">#a20008</color>
     <color name="st_blue">#0a144c</color>
     <color name="st_gray">#787878</color>
-    <color name="st_white">#f5f5f5</color>
+    <color name="st_white">#FFFFFFFF</color>
 </resources>
