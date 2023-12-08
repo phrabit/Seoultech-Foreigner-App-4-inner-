@@ -1,5 +1,6 @@
 package com.example.a4_inner
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -104,16 +105,28 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         binding.logOutButton2.setOnClickListener {
-            // sign out
-            try {
-                Firebase.auth.signOut()
-                CurrentUser.logout()
-                Log.d("ITM", "successfully signed out")
-            } catch (e: ApiException) {
-                Log.d("ITM", "Sign out failed")
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("Log Out")
+            builder.setMessage("Are you sure?")
+
+            builder.setPositiveButton("Yes") { _, _ ->
+                // sign out
+                try {
+                    Firebase.auth.signOut()
+                    CurrentUser.logout()
+                    Log.d("ITM", "successfully signed out")
+                } catch (e: ApiException) {
+                    Log.d("ITM", "Sign out failed")
+                }
+                val intent = Intent(this, LogInActivity::class.java);
+                startActivity(intent)            }
+
+            builder.setNegativeButton("No") { _, _ ->
             }
-            val intent = Intent(this, LogInActivity::class.java);
-            startActivity(intent)
+
+            val dialog = builder.create()
+            dialog.show()
         }
     }
 }

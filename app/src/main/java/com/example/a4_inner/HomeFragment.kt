@@ -1,5 +1,6 @@
 package com.example.a4_inner
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -66,21 +67,33 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userNameText: TextView = binding.textView
+        val userNameText: TextView = binding.nameTxt
 
         userNameText.text = CurrentUser.getName
 
         binding.logOutButton.setOnClickListener {
-            // sign out
-            try {
-                Firebase.auth.signOut()
-                CurrentUser.logout()
-                Log.d("ITM", "successfully signed out")
-            } catch (e: ApiException) {
-                Log.d("ITM", "Sign out failed")
+            val builder = AlertDialog.Builder(requireContext())
+
+            builder.setTitle("Log Out")
+            builder.setMessage("Are you sure?")
+
+            builder.setPositiveButton("Yes") { _, _ ->
+                // sign out
+                try {
+                    Firebase.auth.signOut()
+                    CurrentUser.logout()
+                    Log.d("ITM", "successfully signed out")
+                } catch (e: ApiException) {
+                    Log.d("ITM", "Sign out failed")
+                }
+                val intent = Intent(activity, LogInActivity::class.java);
+                startActivity(intent)            }
+
+            builder.setNegativeButton("No") { _, _ ->
             }
-            val intent = Intent(activity, LogInActivity::class.java);
-            startActivity(intent)
+
+            val dialog = builder.create()
+            dialog.show()
         }
     }
 
