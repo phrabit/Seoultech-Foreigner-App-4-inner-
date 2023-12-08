@@ -80,10 +80,8 @@ class NaviActivity : AppCompatActivity() {
                 Log.d("ITM","PhotoUrl: ${CurrentUser.getPhotoUrl}")
             } else {
                 // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
-
                 // Create an Intent to start the LoginActivity
                 val intent = Intent(this, LogInActivity::class.java)
-
                 // Start the LoginActivity
                 startActivity(intent)
                 finish()

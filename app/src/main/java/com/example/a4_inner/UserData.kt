@@ -78,8 +78,21 @@ object CurrentUser {
             _photoUrl = null
         }
     }
+
+    fun logout() {
+        // 모든 필드를 null로 설정
+        _userUid = null
+        _name = null
+        _creationDate = null
+        _email = null
+        _photoUrl = null
+
+        // 사용자 참조 초기화
+        userRef = FirestoreProvider.db.collection("users").document()
+    }
 }
 
+// Firebase 데이터 입력용 data class. 입력 이외에 사용하지 X.
 data class UserData(
     val userUid: String?,
     val name: String?, // Firebase.auth.currentUser.displayName

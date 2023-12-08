@@ -98,17 +98,6 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
-    // 로그인 시 페이지를 변경하는 코드(UI update)
-    private fun updateUI(user: FirebaseUser?) { //update ui code here
-        if (user != null) {
-            userAssign(user)
-            val intent = Intent(this, NaviActivity::class.java)
-            intent.putExtra("fromLogin", "true")
-            startActivity(intent)
-            finish()
-        }
-    }
-
     private fun gSignInFun() {
         googleSignInClient.signOut()
         val signInIntent = googleSignInClient.signInIntent
@@ -132,9 +121,26 @@ class LogInActivity : AppCompatActivity() {
             }
     }
 
+    // 로그인 시 페이지를 변경하는 코드(UI update)
+    private fun updateUI(user: FirebaseUser?) { //update ui code here
+        if (user != null) {
+            userAssign(user)
+            val intent = Intent(this, NaviActivity::class.java)
+            intent.putExtra("fromLogin", "true")
+            startActivity(intent)
+            finish()
+        }
+    }
+
     private fun userAssign(user: FirebaseUser) {
         // user object initialization(Singleton pattern) + asynchronization
-        CurrentUser.initializeUser(user.uid, user.displayName, Timestamp(Date(user.metadata!!.creationTimestamp)), user.email, user.photoUrl)
+        CurrentUser.initializeUser(
+            user.uid,
+            user.displayName,
+            Timestamp(Date(user.metadata!!.creationTimestamp)),
+            user.email,
+            user.photoUrl
+        )
         // DB write
         // Access a Cloud Firestore instance
         val db = Firebase.firestore
@@ -145,16 +151,14 @@ class LogInActivity : AppCompatActivity() {
             .addOnSuccessListener { documentSnapshot ->
                 // Document does not exist = First time login
                 if (!documentSnapshot.exists()) {
-                    // making data class for uploading into DB
-                    val userData = UserData(
+                    // Uploading user data for DB
+                    db.collection("users").document(user.uid).set(UserData(
                         user.uid,
                         user.displayName!!,
                         Timestamp(Date(user.metadata!!.creationTimestamp)),
                         user.email!!,
                         user.photoUrl
-                    )
-                    // Uploading user data for DB
-                    db.collection("users").document(user.uid).set(userData)
+                    ))
                         .addOnSuccessListener {
                             Log.d("ITM", "DocumentSnapshot added with ID: ${user.uid}")
                         }
@@ -163,11 +167,11 @@ class LogInActivity : AppCompatActivity() {
                         }
                 } else {
                     // X First time login -> just simple login
-                    Log.d("ITM","User exists")
+                    Log.d("ITM", "User exists")
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("ITM","error occurred during loading firestore document in userAssign(): $e")
+                Log.e("ITM", "error occurred during loading firestore document in userAssign(): $e")
             }
 
     }
