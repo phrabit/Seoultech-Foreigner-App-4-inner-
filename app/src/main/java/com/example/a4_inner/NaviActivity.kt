@@ -24,6 +24,7 @@ private const val TAG_BULLETIN = "bulletin_fragment"
 private const val TAG_TIMETABLE = "timetable_fragment"
 private const val TAG_MAP = "map_fragment"
 private const val TAG_AR = "ar_fragment"
+private const val TAG_RECENT_DEST = "recent_dest_fragment"
 
 class NaviActivity : AppCompatActivity() {
 
@@ -58,10 +59,15 @@ class NaviActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
         binding.navigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.home -> setFragment(TAG_HOME, HomeFragment())
+                R.id.home -> {
+                    setFragment(TAG_HOME, HomeFragment())
+                    val fragment = supportFragmentManager.findFragmentByTag(TAG_HOME)
+                    if (fragment is HomeFragment) {
+                        fragment.refresh()
+                    }
+                }
                 R.id.bulletin -> setFragment(TAG_BULLETIN, BulletinFragment())
                 R.id.timetable -> setFragment(TAG_TIMETABLE, TimetableFragment())
                 R.id.map -> setFragment(TAG_MAP, MapFragment())
@@ -80,13 +86,8 @@ class NaviActivity : AppCompatActivity() {
                 Log.d("ITM","PhotoUrl: ${CurrentUser.getPhotoUrl}")
             } else {
                 // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
-
                 // Create an Intent to start the LoginActivity
                 val intent = Intent(this, LogInActivity::class.java)
-
-                // Optional: Add any extra information to the intent
-                // intent.putExtra("key", "value")
-
                 // Start the LoginActivity
                 startActivity(intent)
                 finish()
@@ -107,8 +108,11 @@ class NaviActivity : AppCompatActivity() {
         val timetable = manager.findFragmentByTag(TAG_TIMETABLE)
         val map = manager.findFragmentByTag(TAG_MAP)
         val ar = manager.findFragmentByTag(TAG_AR)
+        val recentDest = manager.findFragmentByTag(TAG_RECENT_DEST)
 
-
+        if(recentDest == null){
+            Log.d("lololol", "Asdasd")
+        }
         if (home != null) {
             fragTransaction.hide(home)
         }
@@ -152,36 +156,5 @@ class NaviActivity : AppCompatActivity() {
         }
         fragTransaction.commitAllowingStateLoss()
     }
-
-//    private fun setupFirestoreListener() {
-//        snapshotListener = userDocRef.addSnapshotListener { snapshot, e ->
-//            if (e != null) {
-//                Log.e("ITM", "Firestore listen failed.", e)
-//                return@addSnapshotListener
-//            }
-//
-//            // Check if the changes are from local writes
-//            val source = if (snapshot != null && snapshot.metadata.hasPendingWrites()) {
-//                "Local"
-//            } else {
-//                "Server"
-//            }
-//
-//            // Log the data based on whether it's a local or server change
-//            if (snapshot != null && snapshot.exists()) {
-//                //TODO userData 밖에 구현해서 활용(homeFragment instance로 전달)
-//
-//                val userData = snapshot.toObject(UserData::class.java)
-//
-//                userData?.let {
-//                    Log.d("ITM", "$source data: UserUid=${it.userUid}, Name=${it.name}, CreationDate=${it.creationDate}")
-//                    // User data transmission(각 fragment 별로 구현해놓기)
-////                    HomeFragment.newInstance(it)
-//                }
-//            } else {
-//                Log.d("ITM", "$source data: null")
-//            }
-//        }
-//    }
 }
 

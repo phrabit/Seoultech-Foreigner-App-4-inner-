@@ -10,7 +10,7 @@
         android:id="@+id/userPhotoImageView2"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="364dp"
+        android:layout_marginTop="250dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,23 +21,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="158dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="163dp"
-        android:layout_marginBottom="183dp"
         android:text="LOG OUT"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.437"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.506" />
+        app:layout_constraintTop_toBottomOf="@+id/onBoardingToggle" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="177dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="176dp"
         android:text="View for check login"
         android:textColor="@color/lavender"
@@ -47,5 +45,29 @@
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userPhotoImageView2" />
+
+    <TextView
+        android:id="@+id/onBoardingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="onBoarding: OFF"
+        android:textColor="@color/lavender"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <Switch
+        android:id="@+id/onBoardingToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:text="OnBoarding Toggle Button"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onBoardingText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

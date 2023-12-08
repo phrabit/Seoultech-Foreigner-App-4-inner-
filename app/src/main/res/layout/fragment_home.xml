@@ -34,10 +34,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainerView"
+            android:id="@+id/todayLectureView"
             android:name="com.example.a4_inner.TodayClassFragment"
             android:layout_width="380dp"
-            android:layout_height="300dp"
+            android:layout_height="200dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/black_round_background"
             android:backgroundTintMode="screen"
@@ -46,6 +46,36 @@
             app:layout_constraintHorizontal_bias="0.454"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userPhotoImageView"
+            tools:visibility="visible" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/recentBoardView"
+            android:name="com.example.a4_inner.RecentPostFragment"
+            android:layout_width="380dp"
+            android:layout_height="230dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/black_round_background"
+            android:backgroundTintMode="screen"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.451"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/todayLectureView"
+            tools:visibility="visible" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/recentBuildingView"
+            android:name="com.example.a4_inner.RecentDestinationFragment"
+            android:layout_width="380dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/black_round_background"
+            android:backgroundTintMode="screen"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.451"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recentBoardView"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

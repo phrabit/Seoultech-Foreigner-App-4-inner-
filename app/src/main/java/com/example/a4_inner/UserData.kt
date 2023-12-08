@@ -36,6 +36,7 @@ object CurrentUser {
 
     private lateinit var userRef: DocumentReference
 
+    // getting user data from firebase firestore
     fun initializeUser(uid: String, name: String?, creationDate: Timestamp, email: String?, photoUrl: Uri?) {
         this._userUid = uid
         this._name = name
@@ -77,8 +78,21 @@ object CurrentUser {
             _photoUrl = null
         }
     }
+
+    fun logout() {
+        // 모든 필드를 null로 설정
+        _userUid = null
+        _name = null
+        _creationDate = null
+        _email = null
+        _photoUrl = null
+
+        // 사용자 참조 초기화
+        userRef = FirestoreProvider.db.collection("users").document()
+    }
 }
 
+// Firebase 데이터 입력용 data class. 입력 이외에 사용하지 X.
 data class UserData(
     val userUid: String?,
     val name: String?, // Firebase.auth.currentUser.displayName

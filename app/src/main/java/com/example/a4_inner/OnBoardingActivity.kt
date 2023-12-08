@@ -12,28 +12,32 @@ class OnBoardingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityOnBoardingBinding.inflate(layoutInflater)
-        binding.toLoginBtn.setOnClickListener {
+
+        // if onBoarding Toggle is OFF(false), directly go to LogInActivity.
+        if(!PreferenceHelper.getBoolean(this)) {
             // Create an Intent to start the LoginActivity
             val intent = Intent(this, LogInActivity::class.java)
-
-            // Optional: Add any extra information to the intent
-            // intent.putExtra("key", "value")
 
             // Start the LoginActivity
             startActivity(intent)
 
-            // Optional: Finish the current activity to remove it from the back stack
+            finish()
+        }
+
+        binding.toLoginBtn.setOnClickListener {
+            // If onBoarding successfully ended, onBoardingToggle OFF.
+            PreferenceHelper.setBoolean(this, false)
+
+            // Create an Intent to start the LoginActivity
+            val intent = Intent(this, LogInActivity::class.java)
+
+            // Start the LoginActivity
+            startActivity(intent)
+
             finish()
         }
 
 
         setContentView(binding.root)
-    }
-
-    //TODO check if it is first time opening the app or not
-    fun onBoardingVerify() {
-        // if it is first time, onboarding page show
-
-        // if it is not, directly navigate to login page
     }
 }

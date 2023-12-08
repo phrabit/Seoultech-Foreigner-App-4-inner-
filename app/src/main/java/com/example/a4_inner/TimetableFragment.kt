@@ -28,7 +28,7 @@ class TimetableFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     lateinit var binding: FragmentTimetableBinding
-
+    val timeTableDB:TimeTableDB by lazy {TimeTableDB.getInstance(this.requireContext())}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
