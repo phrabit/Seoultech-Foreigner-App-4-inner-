@@ -74,9 +74,13 @@ class LogInActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         binding.goNavi.setOnClickListener {
+//            val intent = Intent(this, NaviActivity::class.java)
+//            // Optional: Add any extra information to the intent
+//            intent.putExtra("fromLogin", "true")
+//            startActivity(intent) // Add this line to start the activity
+//            finish()
+
             val intent = Intent(this, NaviActivity::class.java)
-            // Optional: Add any extra information to the intent
-            intent.putExtra("fromLogin", "true")
             startActivity(intent) // Add this line to start the activity
             finish()
         }

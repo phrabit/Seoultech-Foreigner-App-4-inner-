@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
 
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView
-        val userNameText: TextView = binding.textView
+        val userNameText: TextView = binding.nameTxt
 
         userNameText.text = CurrentUser.getName
 

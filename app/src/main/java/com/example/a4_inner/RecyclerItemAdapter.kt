@@ -14,6 +14,11 @@ class RecyclerUserAdapter(private val items: ArrayList<Board>) : RecyclerView.Ad
 
     private var listener: OnItemClickListener? = null
 
+//    fun addItems(newItems: List<Board>) {
+//        items.addAll(newItems)
+//        notifyDataSetChanged()
+//    }
+
     fun setOnItemClickListener(listener: OnItemClickListener) {
         this.listener = listener
     }
