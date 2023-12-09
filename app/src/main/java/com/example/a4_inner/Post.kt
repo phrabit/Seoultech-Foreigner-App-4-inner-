@@ -41,7 +41,8 @@ class Post : AppCompatActivity() {
             if (title.isNotEmpty() && contents.isNotEmpty()) {
                 // 현재 시간 가져오기
                 val currentTime = Calendar.getInstance().time
-                val user_id = FirebaseAuth.getInstance().currentUser?.uid ?: "dummy" // 로그인한 사용자의 고유 ID를 가져옵니다.
+                //val user_id = FirebaseAuth.getInstance().currentUser?.uid ?: "dummy" // 로그인한 사용자의 고유 ID를 가져옵니다.
+                val user_id = CurrentUser.getUserUid!! // 재유형이 만든 CurrentUser의 getUserUid로 접근
 
                 val boardRef = FirebaseFirestore.getInstance().collection("Board").document()
                 val documentId = boardRef.id  // 임시 documentId를 생성합니다.

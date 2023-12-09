@@ -14,7 +14,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black">
+            android:background="@color/st_blue">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -31,15 +31,16 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:cropToPadding="false"
-                android:src="@android:drawable/ic_menu_add" />
-            <!--                android:background="@android:color/transparent"-->
+                android:src="@drawable/plus"
+                android:background="@android:color/transparent"/>
+
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black">
+            android:background="@color/st_blue">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="9"
                 android:textColor="#ffffff"
@@ -198,7 +199,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="10"
                 android:textColor="#ffffff"
@@ -289,7 +290,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="11"
                 android:textColor="#ffffff"
@@ -380,7 +381,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="12"
                 android:textColor="#ffffff"
@@ -471,7 +472,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="13"
                 android:textColor="#ffffff"
@@ -562,7 +563,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="14"
                 android:textColor="#ffffff"
@@ -653,7 +654,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="15"
                 android:textColor="#ffffff"
@@ -744,7 +745,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="16"
                 android:textColor="#ffffff"
@@ -835,7 +836,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/black"
+                android:background="@color/st_blue"
                 android:gravity="right"
                 android:text="17"
                 android:textColor="#ffffff"

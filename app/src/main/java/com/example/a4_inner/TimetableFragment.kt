@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,9 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import com.example.a4_inner.databinding.FragmentTimetableBinding
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import org.checkerframework.checker.units.qual.Current
 
 // TODO: Rename parameter arguments, choose names that match
 private const val ARG_PARAM1 = "param1"
@@ -55,20 +59,46 @@ class TimetableFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        // Shared Preferences에서 강의 정보 불러오기
-        val sharedPreferences = requireActivity().getSharedPreferences("Timetable", Context.MODE_PRIVATE)
-        for (day in listOf("monday", "tuesday", "wednesday", "thursday", "friday")) {
-            for (period in 1..9) {
-                val info = sharedPreferences.getString("$day$period", null)
-                if (info != null) {
-                    val splitInfo = info.split("\n")
-                        if (splitInfo.size >= 3) {
-                            applyBackgroundColor(day, period, period, splitInfo[0], splitInfo[1], splitInfo[2])
+        loadTimetableData()
+    }
+
+    fun loadTimetableData() {
+        val userId = CurrentUser.getUserUid
+        val timetableRef = FirebaseFirestore.getInstance()
+            .collection("Timetable")
+            .document(userId.toString())
+
+        timetableRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data!=null) {
+                    Log.d("ITM", "DocumentSnapshot data: ${document.data}")
+                    Log.d("ITM","hello?")
+
+                    val timetableInfo = document.data as Map<String, Any>
+                    for ((day, info) in timetableInfo) {
+                        val dayInfo = info as Map<String, Any>
+                        for ((_, classInfo) in dayInfo) {
+                            val classInfoDetails = classInfo as Map<String, List<String>>
+                            for ((_, classInfo) in classInfoDetails) {
+                                val period = classInfo[0]
+                                val className = classInfo[1]
+                                val selectedClassRoom = classInfo[2]
+                                val classroom = classInfo[3]
+
+                                // Apply the loaded data to your app
+                                applyBackgroundColor(day, period.split(" ")[0].toInt(), period.split(" ")[1].toInt(), className, selectedClassRoom, classroom)
+                            }
                         }
+                    }
+                } else {
+                    Log.d("ITM", "No such document")
                 }
             }
-        }
+            .addOnFailureListener { exception ->
+                Log.d("ITM", "get failed with ", exception)
+            }
     }
+
 
     private fun showAddClassDialog() {
         val builder = AlertDialog.Builder(requireContext())
@@ -115,17 +145,29 @@ class TimetableFragment : Fragment() {
             val selectedClassRoom = spinnerClassRoom.selectedItem.toString()
             val classroom = editClassroom.text.toString()
 
-            // 강의 정보를 Shared Preferences에 저장
-            val sharedPreferences = requireActivity().getSharedPreferences("Timetable", Context.MODE_PRIVATE)
-            val editor = sharedPreferences.edit()
-            for (period in selectedStartPeriod.toInt()..selectedEndPeriod.toInt()) {
-                editor.putString("$selectedDayOfWeek$period", "$className\n$selectedClassRoom $classroom")
-            }
-            editor.apply()
+            // 강의 정보를 Firebase에 저장
+            val userId = CurrentUser.getUserUid
+            val timetableRef = FirebaseFirestore.getInstance()
+                .collection("Timetable")
+                .document(userId.toString())
+
+            val timetableInfo = mapOf(
+                selectedDayOfWeek to mapOf(
+                    "0" to mapOf(
+                        "$selectedStartPeriod" to listOf(
+                            "$selectedStartPeriod $selectedEndPeriod",
+                            className,
+                            selectedClassRoom,
+                            classroom
+                        )
+                    )
+                )
+            )
+
+            timetableRef.set(timetableInfo, SetOptions.merge())
 
             // TimetableFragment에 메서드를 호출하여 선택된 정보를 이용하여 셀에 색칠
             applyBackgroundColor(selectedDayOfWeek, selectedStartPeriod.toInt(), selectedEndPeriod.toInt(), className, selectedClassRoom, classroom)
-
 
             dialog.dismiss()
         }
@@ -137,6 +179,7 @@ class TimetableFragment : Fragment() {
         val alertDialog = builder.create()
         alertDialog.show()
     }
+
 
     private fun applyBackgroundColor(dayOfWeek: String, startPeriod: Int, endPeriod: Int, className: String, selectedClassRoom: String, classRoom: String) {
         // TimetableFragment의 onCreateView에서 Timetable의 각 셀에 해당하는 ID를 찾아 배경색을 변경합니다.
@@ -155,8 +198,8 @@ class TimetableFragment : Fragment() {
                         textFlag = true
                     }
 
-                    cellView.setBackgroundColor(Color.YELLOW) // 여기에서는 노란색으로 설정했습니다. 필요에 따라 수정하세요.
-                    cellView.setTextColor(Color.BLUE)
+                    cellView.setBackgroundColor(Color.RED) // 여기에서는 노란색으로 설정했습니다. 필요에 따라 수정하세요.
+                    cellView.setTextColor(Color.WHITE)
 
                 }
             }

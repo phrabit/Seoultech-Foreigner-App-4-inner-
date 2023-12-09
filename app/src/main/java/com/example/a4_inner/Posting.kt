@@ -13,10 +13,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a4_inner.databinding.ActivityPostingBinding
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.firestore
 import java.security.Timestamp
 import java.util.Calendar
 
@@ -71,38 +73,24 @@ class Posting : AppCompatActivity() {
         // commentsBtn 클릭 이벤트 처리
         binding.commentsBtn.setOnClickListener {
             Log.d("ITM", "Button clicked - Before addComment()")
-            addComment()
+            try {
+                addComment()
+            } catch (e: Exception) {
+                Log.e("ITM", "Exception in addComment()", e)
+            }
             Log.d("ITM", "Button clicked - After addComment()")
         }
 
         watchComments()
-
-        // Firebase Firestore에서 댓글 실시간 업데이트를 위한 리스너 등록
-//        commentListener = firestore.collection("Comment")
-//            .addSnapshotListener { value, error ->
-//                if (error != null) {
-//                    Log.e("ITM", "댓글 업데이트 실패: $error")
-//                    return@addSnapshotListener
-//                }
-//                if (value != null) {
-//                    commentList.clear()
-//                    for (doc in value.documents) {
-//                        val comment = doc.toObject(Comment::class.java)
-//                        if (comment != null) {
-//                            commentList.add(comment)
-//                        }
-//                    }
-//                    commentAdapter.notifyDataSetChanged()
-//                }
-//            }
 
         /////////////////////////////////////////////////////////////////
 
         // Spinner 초기화
         val spinnerItems = arrayOf("Update", "Delete")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
+
         binding.imageButton.setOnClickListener {
-            showOptionsDialog(adapter)
+            showOptionsDialog(adapter, postId!!)
         }
 
     }
@@ -135,15 +123,15 @@ class Posting : AppCompatActivity() {
         val newCommentId = firestore.collection("Comment").document().id
 
         // 이미지 리소스 가져오기
-        val drawableId: Int = R.drawable.user
-        val imageDrawable: Drawable? = ContextCompat.getDrawable(this, drawableId)
+//        val drawableId: Int = R.drawable.user
+//        val imageDrawable: Drawable? = ContextCompat.getDrawable(this, drawableId)
 
         // 댓글 목록에 추가
         val newComment = Comment(
             img = null,
             comment_id = newCommentId,  // Use the generated ID
             content = commentText,
-            user_id = FirebaseAuth.getInstance().currentUser?.uid ?: "root",
+            user_id = CurrentUser.getUserUid,
             creationTime = java.util.Date(),
             postId = postId  // postId를 댓글에 추가합니다.
         )
@@ -206,30 +194,14 @@ class Posting : AppCompatActivity() {
         }
     }
 
-    // 댓글 목록 업데이트
-//    private fun updateComments(commentsIdList: List<String>) {
-//        commentList.clear()
-//        for (commentId in commentsIdList) {
-//            firestore.collection("Comment").document(commentId)
-//                .get()
-//                .addOnSuccessListener { documentSnapshot ->
-//                    val comment = documentSnapshot.toObject(Comment::class.java)
-//                    if (comment != null) {
-//                        commentList.add(comment)
-//                        commentAdapter.notifyDataSetChanged()
-//                    }
-//                }
-//        }
-//    }
 
-
-    private fun showOptionsDialog(adapter: ArrayAdapter<String>) {
+    private fun showOptionsDialog(adapter: ArrayAdapter<String>, docId: String) {
         val options = arrayOf("Update", "Delete")
 
         val alertDialog = AlertDialog.Builder(this)
             .setItems(options) { _, which ->
                 val selectedOption = options[which]
-                handleSelectedOption(selectedOption)
+                handleSelectedOption(selectedOption, docId)
             }
             .setNegativeButton("Cancel", null)
             .create()
@@ -237,23 +209,38 @@ class Posting : AppCompatActivity() {
         alertDialog.show()
     }
 
+    private fun handleSelectedOption(selectedOption: String, docId: String) {
+        val db = Firebase.firestore
+        val docRef = db.collection("Board").document(docId)
 
-    private fun handleSelectedOption(selectedOption: String) {
-        when (selectedOption) {
-            "Update" -> {
-                // Implement the logic for update
-                // For example, you can open another activity for updating the comment
-                startUpdatePostActivity()
-
+        docRef.get().addOnSuccessListener { document ->
+            if (document != null) {
+                val userId = document.getString("user_id")
+                if (userId == CurrentUser.getUserUid) {
+                    when (selectedOption) {
+                        "Update" -> {
+                            // Implement the logic for update
+                            // For example, you can open another activity for updating the comment
+                            startUpdatePostActivity()
+                        }
+                        "Delete" -> {
+                            // Implement the logic for delete
+                            // For example, you can remove the comment from the list
+                            Toast.makeText(this, "Delete selected", Toast.LENGTH_SHORT).show()
+                            deletePost()
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "Only the user who wrote the post has permission.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Log.d("ITM", "No such document")
             }
-            "Delete" -> {
-                // Implement the logic for delete
-                // For example, you can remove the comment from the list
-                Toast.makeText(this, "Delete selected", Toast.LENGTH_SHORT).show()
-                deletePost()
-            }
+        }.addOnFailureListener { exception ->
+            Log.d("ITM", "get failed with ", exception)
         }
     }
+
 
     private fun startUpdatePostActivity() {
         val updateIntent = Intent(this, updatePost::class.java)
