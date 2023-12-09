@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.get
+import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
 import com.example.a4_inner.databinding.FragmentHomeBinding
 import com.google.android.gms.common.api.ApiException
@@ -47,15 +49,22 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
-
+    fun refresh() {
+        val recent_dest_fragment = childFragmentManager.findFragmentById(R.id.recentDestinationFragment)
+        if(recent_dest_fragment is RecentDestinationFragment){
+            recent_dest_fragment.redraw()
+        }
+    }
     override fun onResume() {
         super.onResume()
-
+        Log.d("pref", "ASdadasdadd")
         // Load the user's photo into the ImageView using Glide
         val photoUrl: Uri? = CurrentUser.getPhotoUrl
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView
-
+        childFragmentManager.beginTransaction()
+            .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
+            .commit()
         Glide.with(this)
             .load(photoUrl)
             .placeholder(R.drawable.user) // Placeholder image while loading
@@ -71,30 +80,6 @@ class HomeFragment : Fragment() {
 
         userNameText.text = CurrentUser.getName
 
-        binding.logOutButton.setOnClickListener {
-            val builder = AlertDialog.Builder(requireContext())
-
-            builder.setTitle("Log Out")
-            builder.setMessage("Are you sure?")
-
-            builder.setPositiveButton("Yes") { _, _ ->
-                // sign out
-                try {
-                    Firebase.auth.signOut()
-                    CurrentUser.logout()
-                    Log.d("ITM", "successfully signed out")
-                } catch (e: ApiException) {
-                    Log.d("ITM", "Sign out failed")
-                }
-                val intent = Intent(activity, LogInActivity::class.java);
-                startActivity(intent)            }
-
-            builder.setNegativeButton("No") { _, _ ->
-            }
-
-            val dialog = builder.create()
-            dialog.show()
-        }
     }
 
     // destroy view for Fragment

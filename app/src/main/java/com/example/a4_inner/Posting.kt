@@ -260,7 +260,7 @@ class Posting : AppCompatActivity() {
 
         val postId = intent.getStringExtra("PostId")
 
-        // 현재 title과 contents를 updatePost에 전달
+        // 현재 title과 contents ㅇㄴ를 updatePost에 전달
         updateIntent.putExtra("Title", binding.itemTitle.text.toString())
         updateIntent.putExtra("Contents", binding.contentsView.text.toString())
         updateIntent.putExtra("PostId", postId)  // PostId를 Intent에 추가

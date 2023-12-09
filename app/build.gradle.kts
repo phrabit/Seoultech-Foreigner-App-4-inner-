@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
+    id("kotlin-kapt")
 }
 
 android {
@@ -63,4 +64,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("com.kakao.maps.open:android:2.6.0")
+
+    implementation("androidx.room:room-ktx:2.4.0")
+    annotationProcessor("androidx.room:room-compiler:2.4.0")
+    kapt("androidx.room:room-compiler:2.4.0")
 }
