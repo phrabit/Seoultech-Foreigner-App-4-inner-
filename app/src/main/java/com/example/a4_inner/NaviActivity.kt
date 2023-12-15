@@ -1,6 +1,7 @@
 package com.example.a4_inner
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -80,10 +81,31 @@ class NaviActivity : AppCompatActivity() {
         // 만약 로그인 액티비티에서 넘어왔다면
         if (intent.getStringExtra("fromLogin") == "true") {
             val userAuth = Firebase.auth.currentUser
+            val db = FirebaseFirestore.getInstance()
+
             if (userAuth != null) {
                 Toast.makeText(this, "Welcome, ${CurrentUser.getName}!", Toast.LENGTH_SHORT).show()
                 intent.removeExtra("fromLogin")
-                Log.d("ITM","PhotoUrl: ${CurrentUser.getPhotoUrl}")
+                // 추가정보 입력 확인 과정
+                val docRef = db.collection("users").document(userAuth.uid)
+                docRef.get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            val department = document.getString("department")
+                            val stuNum = document.getString("stuNum")
+                            val grade = document.getString("grade")
+                            val nation = document.getString("nation")
+
+                            if (department == null || stuNum == null || grade == null || nation == null) {
+                                showDialog()
+                            }
+                        } else {
+                            Log.d("NaviActivity", "No such document")
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d("NaviActivity", "get failed with ", exception)
+                    }
             } else {
                 // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
                 // Create an Intent to start the LoginActivity
@@ -169,6 +191,22 @@ class NaviActivity : AppCompatActivity() {
             }
         }
         fragTransaction.commitAllowingStateLoss()
+    }
+
+    private fun showDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Additional Information needed!")
+        builder.setMessage("There are some information missing. Please fill in!")
+
+        builder.setPositiveButton("Confirm") { _, _ ->
+            val intent = Intent(this, MyPageActivity::class.java)
+            // Start the LoginActivity
+            startActivity(intent)
+            finish()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 }
 

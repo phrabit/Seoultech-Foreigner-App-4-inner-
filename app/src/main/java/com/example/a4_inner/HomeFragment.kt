@@ -37,9 +37,8 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    // Load the user's photo into the ImageView using Glide
+    private var photoUrl: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,12 +58,10 @@ class HomeFragment : Fragment() {
         super.onResume()
         Log.d("pref", "ASdadasdadd")
         // Load the user's photo into the ImageView using Glide
-        val photoUrl: Uri? = CurrentUser.getPhotoUrl
+        photoUrl = CurrentUser.getPhotoUrl
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView
-        childFragmentManager.beginTransaction()
-            .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
-            .commit()
+
         Glide.with(this)
             .load(photoUrl)
             .placeholder(R.drawable.user) // Placeholder image while loading
@@ -79,7 +76,6 @@ class HomeFragment : Fragment() {
         val userNameText: TextView = binding.nameTxt
 
         userNameText.text = CurrentUser.getName
-
     }
 
     // destroy view for Fragment

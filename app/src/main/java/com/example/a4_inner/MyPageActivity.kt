@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -20,6 +21,8 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import android.view.View
+
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -76,6 +79,11 @@ class MyPageActivity : AppCompatActivity() {
         binding = ActivityMyPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // grade variable
+        val grades = arrayOf("1st grade; freshman", "2nd grade; sophomore", "3rd grade; junior", "4th grade; senior")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, grades)
+        binding.gradeSpinner.visibility = View.GONE
+
         // 뒤로가기 재정의
         this.onBackPressedDispatcher.addCallback(this, callback)
 
@@ -84,7 +92,7 @@ class MyPageActivity : AppCompatActivity() {
 
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView2
-        val userNameText: TextView = binding.textView3
+        val userNameText: TextView = binding.nameText
 
         userNameText.text = CurrentUser.getName
 
@@ -100,6 +108,21 @@ class MyPageActivity : AppCompatActivity() {
             // 이미지 뷰를 클릭하면 이미지 선택 인텐트를 시작
             pickImageResultLauncher.launch("image/*")
 
+        }
+
+        binding.gradeSpinner.adapter = adapter
+
+        binding.editBtn.setOnClickListener {
+            if (binding.editBtn.text == "수정하기") {
+                binding.gradeText.visibility = View.GONE
+                binding.gradeSpinner.visibility = View.VISIBLE
+                binding.editBtn.text = "완료하기"
+            } else {
+                binding.gradeText.text = binding.gradeSpinner.selectedItem.toString()
+                binding.gradeSpinner.visibility = View.GONE
+                binding.gradeText.visibility = View.VISIBLE
+                binding.editBtn.text = "수정하기"
+            }
         }
 
         if (PreferenceHelper.getBoolean(this)) {

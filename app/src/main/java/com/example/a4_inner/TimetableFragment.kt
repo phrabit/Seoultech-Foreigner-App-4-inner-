@@ -115,26 +115,89 @@ class TimetableFragment : Fragment() {
         val editClassroom = dialogView.findViewById<EditText>(R.id.editClassroom)
 
         // Spinner에 요일 목록 추가
-        val dayOfWeekList = arrayOf("Day","monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
-        val dayOfWeekAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, dayOfWeekList)
+        val dayOfWeekList = arrayOf(
+            "Day",
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+        )
+        val dayOfWeekAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            dayOfWeekList
+        )
         spinnerDayOfWeek.adapter = dayOfWeekAdapter
 
         // Spinner에 교시 목록 추가
         val periodList = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-        val periodAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, periodList)
+        val periodAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            periodList
+        )
         spinnerStartPeriod.adapter = periodAdapter
         spinnerEndPeriod.adapter = periodAdapter
 
 
         // Spinner에 강의실 목록 추가 (이 부분은 프로젝트에 맞게 수정해야 함)
-        val classRoomList = arrayOf("Building", "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall", "(4) Business Incubation Center 2", "(5) Hyeseong Hall", "(6) Cheongun Hall",
-            "(7) Seoul Technopark", "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond", "(12) Eoui Stream", "(13) Main Gate", "(14) Ceramics Hall", "(30) SeoulTech Daycare Center",
-            "(31) Business Incubation Center", "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library", "(35) Central Library Annex", "(36) Suyeon Hall", "(37) Student Union Bldg", "(38) Language Center",
-            "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory", "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate", "(45) Surim Dormitory", "(46) Nuri Dormitory", "(47) SeoulTech Academy House",
-            "(51) The 100th Memorial Hall", "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall", "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall", "(58) Power Plant 2", "(59) R.O.T.C", "(60) Mirae Hall",
-            "(61) Changeui Gate", "(62) Techno Cube", "(63) Main Playground", "(64) South Gate")
+        val classRoomList = arrayOf(
+            "Building",
+            "(1) Administration Bldg",
+            "(2) Dasan Hall",
+            "(3) Changhak Hall",
+            "(4) Business Incubation Center 2",
+            "(5) Hyeseong Hall",
+            "(6) Cheongun Hall",
+            "(7) Seoul Technopark",
+            "(8) Graduate Schools",
+            "(10) Power Plant",
+            "(11) Bungeobang Pond",
+            "(12) Eoui Stream",
+            "(13) Main Gate",
+            "(14) Ceramics Hall",
+            "(30) SeoulTech Daycare Center",
+            "(31) Business Incubation Center",
+            "(32) Frontier Hall",
+            "(33) Hi-Tech Hall",
+            "(34) Central Library",
+            "(35) Central Library Annex",
+            "(36) Suyeon Hall",
+            "(37) Student Union Bldg",
+            "(38) Language Center",
+            "(39) Davinci Hall",
+            "(40) Eoui Hall",
+            "(41) Buram Dormitory",
+            "(42) KB Dormitory",
+            "(43) Seongrim Dormitory",
+            "(44) Hyeopdong Gate",
+            "(45) Surim Dormitory",
+            "(46) Nuri Dormitory",
+            "(47) SeoulTech Academy House",
+            "(51) The 100th Memorial Hall",
+            "(52) Student Union Bldg. 2",
+            "(53) Sangsang Hall",
+            "(54) Areum Hall",
+            "(55) University Gymnasium",
+            "(56) Daeryuk Hall",
+            "(57) Mugung Hall",
+            "(58) Power Plant 2",
+            "(59) R.O.T.C",
+            "(60) Mirae Hall",
+            "(61) Changeui Gate",
+            "(62) Techno Cube",
+            "(63) Main Playground",
+            "(64) South Gate"
+        )
 
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, classRoomList)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            classRoomList
+        )
         spinnerClassRoom.adapter = adapter
 
         builder.setPositiveButton("Add") { dialog, _ ->
@@ -167,7 +230,14 @@ class TimetableFragment : Fragment() {
             timetableRef.set(timetableInfo, SetOptions.merge())
 
             // TimetableFragment에 메서드를 호출하여 선택된 정보를 이용하여 셀에 색칠
-            applyBackgroundColor(selectedDayOfWeek, selectedStartPeriod.toInt(), selectedEndPeriod.toInt(), className, selectedClassRoom, classroom)
+            applyBackgroundColor(
+                selectedDayOfWeek,
+                selectedStartPeriod.toInt(),
+                selectedEndPeriod.toInt(),
+                className,
+                selectedClassRoom,
+                classroom
+            )
 
             dialog.dismiss()
         }
@@ -181,7 +251,14 @@ class TimetableFragment : Fragment() {
     }
 
 
-    private fun applyBackgroundColor(dayOfWeek: String, startPeriod: Int, endPeriod: Int, className: String, selectedClassRoom: String, classRoom: String) {
+    private fun applyBackgroundColor(
+        dayOfWeek: String,
+        startPeriod: Int,
+        endPeriod: Int,
+        className: String,
+        selectedClassRoom: String,
+        classRoom: String
+    ) {
         // TimetableFragment의 onCreateView에서 Timetable의 각 셀에 해당하는 ID를 찾아 배경색을 변경합니다.
         // 여기서는 간단한 예시로 View를 찾아 직접 배경색 및 텍스트를 변경하도록 하였습니다.
         val rootView = view
@@ -189,11 +266,17 @@ class TimetableFragment : Fragment() {
         if (rootView != null) {
             for (period in startPeriod..endPeriod) {
                 val cellId = "$dayOfWeek$period"
-                val cellView = rootView.findViewById<View>(resources.getIdentifier(cellId, "id", requireContext().packageName))
+                val cellView = rootView.findViewById<View>(
+                    resources.getIdentifier(
+                        cellId,
+                        "id",
+                        requireContext().packageName
+                    )
+                )
 
                 if (cellView is TextView) {
                     // 해당 셀이 TextView로 캐스팅 가능한 경우에만 텍스트 및 배경색 변경
-                    if(!textFlag){
+                    if (!textFlag) {
                         cellView.text = "$className\n$selectedClassRoom $classRoom"
                         textFlag = true
                     }

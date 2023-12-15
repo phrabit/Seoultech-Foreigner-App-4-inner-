@@ -21,6 +21,10 @@ object CurrentUser {
     private var _creationDate: Timestamp? = null
     private var _email: String? = null
     private var _photoUrl: Uri? = null
+    private var _department: String? = null
+    private var _stuNum: String? = null
+    private var _grade: String? = null
+    private var _nation: String? = null
 
     // custom getters
     val getUserUid: String?
@@ -72,11 +76,15 @@ object CurrentUser {
         _creationDate = snapshot.getTimestamp("creationDate")
         _email = snapshot.getString("email")
         val photoUrlStr = snapshot.getString("photoUrl")
-        if (photoUrlStr != null) {
-            _photoUrl = Uri.parse(photoUrlStr)
+        _photoUrl = if (photoUrlStr != null) {
+            Uri.parse(photoUrlStr)
         } else {
-            _photoUrl = null
+            null
         }
+        _department = snapshot.getString("department")
+        _stuNum = snapshot.getString("stuNum")
+        _grade = snapshot.getString("grade")
+        _nation = snapshot.getString("nation")
     }
 
     fun logout() {
@@ -86,6 +94,10 @@ object CurrentUser {
         _creationDate = null
         _email = null
         _photoUrl = null
+        _department = null
+        _stuNum = null
+        _grade = null
+        _nation = null
 
         // 사용자 참조 초기화
         userRef = FirestoreProvider.db.collection("users").document()
