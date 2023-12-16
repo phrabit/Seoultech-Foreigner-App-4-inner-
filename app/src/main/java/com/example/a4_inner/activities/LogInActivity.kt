@@ -154,21 +154,9 @@ class LogInActivity : AppCompatActivity() {
                 Log.w("ITM", "Google sign in failed: " + e.message)
             }
         } else {
-            AlertDialog.Builder(this)
-                .setTitle("Offline Login")
-                .setMessage("You are offline. Would you like to try offline login?")
-                .setPositiveButton("Yes") { _, _ ->
-                    // Offline 로그인 수행
-                    FireBase.firebase_online = false
-                    val intent = Intent(this, NaviActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                .setNegativeButton("No", null)
-                .show()
+            offlineLogin()
         }
     }
-
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
@@ -183,9 +171,23 @@ class LogInActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("ITM", "signInWithCredential:failure", task.exception)
-                    updateUI(null)
+                    offlineLogin()
                 }
             }
+    }
+    private fun offlineLogin() {
+        AlertDialog.Builder(this)
+            .setTitle("Offline Login")
+            .setMessage("You are offline. Would you like to try offline login?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Offline 로그인 수행
+                FireBase.firebase_online = false
+                val intent = Intent(this, NaviActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun userAssign(user: FirebaseUser) {
