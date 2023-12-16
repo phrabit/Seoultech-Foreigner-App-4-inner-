@@ -113,15 +113,18 @@
 ## Dependencies
 > *minumum android sdk version: 30*
 
-> #android room:2.4.0#
+> *android room:2.4.0*
 
-> #glide:4.12.0#
+> *glide:4.12.0*
 
-> #firebase auth:22.2.0#
+> *firebase auth:22.2.0*
 
-> #firebase firestore:20.3.0#
+> *firebase firestore:20.3.0*
 
-> #gms location:21.0.1#
+> *gms location:21.0.1*
 
-> #kakaomap:2.6.0#
-
+> *kakaomap:2.6.0*
+-----------------------
+## Dijkstra Algorithm
+54 sites in university and 69 paths among them
+And bydirectional Dijkstra algorithm is implemented in 'UniversitySites.kt'
