@@ -1,24 +1,19 @@
-package com.example.a4_inner
+package com.example.a4_inner.fragments
 
-import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnDetach
-import androidx.fragment.app.FragmentManager
+import com.example.a4_inner.FragmentTags
+import com.example.a4_inner.PreferenceHelper
+import com.example.a4_inner.activities.NaviActivity
 import com.example.a4_inner.databinding.FragmentRecentDestinationBinding
-import com.example.a4_inner.databinding.FragmentTimetableBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-private const val TAG_MAP = "map_fragment"
-private const val TAG_RECENT_DEST = "recent_dest_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [RecentDestinationFragment.newInstance] factory method to
@@ -53,14 +48,16 @@ class RecentDestinationFragment : Fragment() {
         if(recent_buildings[0] != null){
             binding.recentDestination1Btn.text = recent_buildings[0]
             binding.recentDestination1Btn.setOnClickListener {
-                var map_fragment = requireActivity().supportFragmentManager.findFragmentByTag(TAG_MAP)
+                var map_fragment = requireActivity().supportFragmentManager.findFragmentByTag(
+                    FragmentTags.TAG_MAP
+                )
                 if(map_fragment == null){
                     map_fragment = MapFragment.newInstance(binding.recentDestination1Btn.text.toString())
                 }
                 else{
-                    (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination1Btn.text.toString())
+                    (map_fragment as? MapFragment)?.fetchLocation(binding.recentDestination1Btn.text.toString())
                 }
-                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment)
+                (requireActivity() as? NaviActivity)?.setFragment(FragmentTags.TAG_MAP, map_fragment)
             }
         }
         else{
@@ -69,14 +66,16 @@ class RecentDestinationFragment : Fragment() {
         if(recent_buildings[1] != null){
             binding.recentDestination2Btn.text = recent_buildings[1]
             binding.recentDestination2Btn.setOnClickListener {
-                var map_fragment = requireActivity().supportFragmentManager.findFragmentByTag(TAG_MAP)
+                var map_fragment = requireActivity().supportFragmentManager.findFragmentByTag(
+                    FragmentTags.TAG_MAP
+                )
                 if(map_fragment == null){
                     map_fragment = MapFragment.newInstance(binding.recentDestination2Btn.text.toString())
                 }
                 else{
-                    (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination2Btn.text.toString())
+                    (map_fragment as? MapFragment)?.fetchLocation(binding.recentDestination2Btn.text.toString())
                 }
-                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment!!)
+                (requireActivity() as? NaviActivity)?.setFragment(FragmentTags.TAG_MAP, map_fragment!!)
             }
         }
         else{
@@ -85,14 +84,16 @@ class RecentDestinationFragment : Fragment() {
         if(recent_buildings[2] != null){
             binding.recentDestination3Btn.text = recent_buildings[2]
             binding.recentDestination3Btn.setOnClickListener {
-                var map_fragment = requireActivity().supportFragmentManager.findFragmentByTag(TAG_MAP)
+                var map_fragment = requireActivity().supportFragmentManager.findFragmentByTag(
+                    FragmentTags.TAG_MAP
+                )
                 if(map_fragment == null){
                     map_fragment = MapFragment.newInstance(binding.recentDestination3Btn.text.toString())
                 }
                 else{
-                    (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination3Btn.text.toString())
+                    (map_fragment as? MapFragment)?.fetchLocation(binding.recentDestination3Btn.text.toString())
                 }
-                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment!!)
+                (requireActivity() as? NaviActivity)?.setFragment(FragmentTags.TAG_MAP, map_fragment!!)
             }
         }
         else{

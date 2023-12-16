@@ -1,8 +1,6 @@
-package com.example.a4_inner
+package com.example.a4_inner.fragments
 
-import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,18 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.get
-import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.R
 import com.example.a4_inner.databinding.FragmentHomeBinding
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -51,7 +41,12 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
+    @SuppressLint("SetTextI18n")
     fun refresh() {
+        binding.nameTxt.text = CurrentUser.getName + "(" + CurrentUser.nation + ")"
+        binding.studentNumberTxt.text = CurrentUser.stuNum
+        binding.departmentTxt.text = CurrentUser.department
+        binding.gradeTxt.text = CurrentUser.grade.split(";")[1]
         Log.d("ITM", "refresh the home")
         val recent_dest_fragment = childFragmentManager.findFragmentById(R.id.recentDestinationFragment)
         if(recent_dest_fragment is RecentDestinationFragment){
@@ -87,7 +82,7 @@ class HomeFragment : Fragment() {
             .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
             .commit()
         Glide.with(this)
-            .load(photoUrl)
+            .load(CurrentUser.getPhotoUrl)
             .placeholder(R.drawable.user) // Placeholder image while loading
             .error(R.drawable.user) // Error image if loading fails
             .circleCrop()

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyPageActivity">
+    tools:context=".activities.MyPageActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,6 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="200dp"
                 android:text="Department"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -111,6 +113,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="280dp"
                 android:text="Student Number"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -144,6 +148,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="360dp"
                 android:text="Grade"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -165,6 +171,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="440dp"
                 android:text="Nation"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

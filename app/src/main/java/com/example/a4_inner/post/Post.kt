@@ -1,4 +1,4 @@
-package com.example.a4_inner
+package com.example.a4_inner.post
 
 import android.app.Activity
 import android.content.Intent
@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import com.example.a4_inner.Board
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.R
 import com.example.a4_inner.databinding.ActivityPostBinding
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
-import java.util.Date
 
 class Post : AppCompatActivity() {
 

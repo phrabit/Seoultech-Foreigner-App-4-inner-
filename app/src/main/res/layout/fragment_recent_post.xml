@@ -5,7 +5,7 @@
     android:id="@+id/recentPostFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecentPostFragment">
+    tools:context=".fragments.RecentPostFragment">
 
     <Button
         android:id="@+id/recentPost1Txt"

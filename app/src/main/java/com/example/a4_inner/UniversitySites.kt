@@ -17,6 +17,20 @@ fun getDistance(src: LatLng, dest: LatLng): Double {
 }
 
 object UniversitySites {
+    val building_array = arrayOf("Building",
+        "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall",
+        "(5) Hyeseong Hall", "(6) Cheongun Hall", "(7) Seoul Technopark",
+        "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond",
+        "(13) Main Gate", "(30) SeoulTech Daycare Center", "(31) Business Incubation Center",
+        "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library",
+        "(35) Central Library Annex", "(36) Suyeon Hall", "(37) Student Union Bldg",
+        "(38) Language Center", "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory",
+        "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate",
+        "(45) Surim Dormitory", "(46) Nuri Dormitory", "(51) The 100th Memorial Hall",
+        "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall",
+        "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall",
+        "(58) Power Plant 2", "(60) Mirae Hall", "(61) Changeui Gate",
+        "(62) Techno Cube", "(63) Main Playground")
     val main_gate = Node("(13) Main Gate", LatLng.from(37.630181, 127.076815))
     val rotary1 = Node("rotary1", LatLng.from(37.631114, 127.077560))
     val rotary2 = Node("rotary2", LatLng.from(37.631788, 127.078471))
@@ -50,7 +64,7 @@ object UniversitySites {
     val techno_park = Node("(7) Seoul Technopark", LatLng.from(37.634251, 127.080442))
     val bungeobang = Node("(11) Bungeobang Pond", LatLng.from(37.633235, 127.078404))
     val bungeobang_threeway_intersection = Node("bungeobang_threeway_intersection", LatLng.from(37.632726, 127.078801))
-    val dasan_bus_stop = Node("bungeobang_threeway_intersection", LatLng.from(37.632206, 127.078631))
+    val dasan_bus_stop = Node("dasan_bus_stop", LatLng.from(37.632206, 127.078631))
     val dasan_hall = Node("(2) Dasan Hall", LatLng.from(37.631979, 127.077856))
     val changhak_hall = Node("(3) Changhak Hall", LatLng.from(37.632005, 127.079345))
     val stair_front_changhak_hall = Node("stair_front_changhak_hall", LatLng.from(37.631621, 127.079162))

@@ -1,9 +1,7 @@
 package com.example.a4_inner
 
-import android.graphics.drawable.Drawable
 import android.util.Log
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.a4_inner.fragments.HomeFragment
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
