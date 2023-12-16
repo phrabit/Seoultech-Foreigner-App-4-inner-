@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.example.a4_inner.databinding.ActivityMyPageBinding
@@ -21,6 +22,17 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
 class MyPageActivity : AppCompatActivity() {
+
+    // 뒤로가기 재정의
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // NaviActivity로 이동하도록 Intent를 생성합니다.
+            val intent = Intent(this@MyPageActivity, NaviActivity::class.java)
+            // 이전의 액티비티 스택을 모두 지우고 새로운 액티비티를 시작합니다.
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+        }
+    }
 
     private val pickImageResultLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -59,8 +71,14 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMyPageBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         binding = ActivityMyPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 뒤로가기 재정의
+        this.onBackPressedDispatcher.addCallback(this, callback)
+
         //  Assuming you have the user's photo URI stored in a variable named photoUri
         val photoUrl: Uri? = CurrentUser.getPhotoUrl
 
@@ -120,7 +138,8 @@ class MyPageActivity : AppCompatActivity() {
                     Log.d("ITM", "Sign out failed")
                 }
                 val intent = Intent(this, LogInActivity::class.java);
-                startActivity(intent)            }
+                startActivity(intent)
+            }
 
             builder.setNegativeButton("No") { _, _ ->
             }

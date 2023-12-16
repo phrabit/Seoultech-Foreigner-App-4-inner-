@@ -1,6 +1,7 @@
 package com.example.a4_inner
 
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -75,18 +77,50 @@ class LogInActivity : AppCompatActivity() {
 
         binding.goNavi.setOnClickListener {
 //            val intent = Intent(this, NaviActivity::class.java)
-//            // Optional: Add any extra information to the intent
-//            intent.putExtra("fromLogin", "true")
 //            startActivity(intent) // Add this line to start the activity
 //            finish()
 
-            val intent = Intent(this, NaviActivity::class.java)
-            startActivity(intent) // Add this line to start the activity
-            finish()
+            val db = FirebaseFirestore.getInstance()
+
+            db.collection("users").document("eSDQ46aVtvflWf3lFXAhXuAnxKp1")
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        Log.d("ITM", "DocumentSnapshot data: ${document.data}")
+
+                        // Firebase에서 가져온 문서 데이터를 사용하여 CurrentUser를 초기화합니다.
+                        val userUid = document.getString("userUid") // uid 필드
+                        val name = document.getString("name") // name 필드
+                        val creationDate = document.getTimestamp("creationDate") // creationDate 필드
+                        val email = document.getString("email") // email 필드
+                        val photoUrl = document.getString("photoUrl") // photoUrl 필드
+
+                        if (userUid != null && name != null && creationDate != null && email != null && photoUrl != null) {
+                            CurrentUser.initializeUser(
+                                userUid,
+                                name,
+                                creationDate,
+                                email,
+                                Uri.parse(photoUrl)
+                            )
+
+                            updateUI_suho()
+                        } else {
+                            Log.d("ITM", "One or more fields are missing in the document")
+                        }
+                    } else {
+                        Log.d("ITM", "No such document")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("ITM", "get failed with ", exception)
+                }
         }
 
         binding.loginButton.setOnClickListener {
             if (binding.username.text.toString() == "user" && binding.password.text.toString() == "1234") {
+
+                // 수호를 위한 로그인 id : user, pw : 1234
                 Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Login Failed!", Toast.LENGTH_SHORT).show()
@@ -96,6 +130,26 @@ class LogInActivity : AppCompatActivity() {
         binding.googleLoginButton.setOnClickListener {
             gSignInFun()
         }
+    }
+
+    // 로그인 시 페이지를 변경하는 코드(UI update)
+    private fun updateUI(user: FirebaseUser?) { //update ui code here
+        if (user != null) {
+            userAssign(user)
+            val intent = Intent(this, NaviActivity::class.java)
+            intent.putExtra("fromLogin", "true")
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun updateUI_suho() { //update ui code here
+        Log.d("ITM", "updateUI_suho is called")
+        val intent = Intent(this, NaviActivity::class.java)
+        intent.putExtra("fromLogin", "suho")
+        Log.d("ITM", "fromLogin extra added to intent: ${intent.getStringExtra("fromLogin")}")
+        startActivity(intent)
+        finish()
     }
 
     private fun gSignInFun() {
@@ -112,24 +166,15 @@ class LogInActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("ITM", "signInWithCredential:success")
                     val user = auth.currentUser
+
                     updateUI(user)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("ITM", "signInWithCredential:failure", task.exception)
                     updateUI(null)
                 }
             }
-    }
-
-    // 로그인 시 페이지를 변경하는 코드(UI update)
-    private fun updateUI(user: FirebaseUser?) { //update ui code here
-        if (user != null) {
-            userAssign(user)
-            val intent = Intent(this, NaviActivity::class.java)
-            intent.putExtra("fromLogin", "true")
-            startActivity(intent)
-            finish()
-        }
     }
 
     private fun userAssign(user: FirebaseUser) {

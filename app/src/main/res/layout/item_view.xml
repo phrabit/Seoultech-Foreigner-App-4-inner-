@@ -4,14 +4,15 @@
     android:layout_height="70dp"
     android:layout_margin="5dp"
     android:layout_marginBottom="5dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/item_background">
 
     <!-- 항목을 어떻게 보여줄지 item View 생성> -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#EAECEB"
+        android:background="@drawable/item_background"
         android:orientation="horizontal"
         android:padding="5dp">
 
@@ -19,14 +20,14 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:background="#E6E6E6"
+            android:background="@drawable/item_textview_background"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#EEEEFA"
+                android:background="@drawable/item_textview_background"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:textColor="#000000"
@@ -38,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="#EEEEFA"
+                android:background="@drawable/item_textview_background"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:textColor="#666666"

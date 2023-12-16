@@ -1,10 +1,13 @@
 package com.example.a4_inner
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,7 +25,7 @@ class RecyclerCommentAdapter(private val commentList: ArrayList<Comment>) : Recy
         holder.bind(comment)
 
         holder.itemView.findViewById<ImageView>(R.id.delete).setOnClickListener {
-            deleteComment(position)
+            deleteComment(position, it.context)
         }
     }
 
@@ -40,18 +43,24 @@ class RecyclerCommentAdapter(private val commentList: ArrayList<Comment>) : Recy
         }
     }
 
-    private fun deleteComment(position: Int) {
+    private fun deleteComment(position: Int, context: Context) {
         val commentToDelete = commentList[position]
 
-        firestore.collection("Comment").document(commentToDelete.comment_id!!)
-            .delete()
-            .addOnSuccessListener {
-                commentList.removeAt(position)
-                notifyItemRemoved(position)
-            }
-            .addOnFailureListener { e ->
-                // 로그를 출력하거나 사용자에게 에러 메시지를 표시합니다.
-            }
+        Log.d("ITM","${CurrentUser.getUserUid} ,  ${commentToDelete.user_id}")
+
+        if (commentToDelete.user_id == CurrentUser.getUserUid) {
+            firestore.collection("Comment").document(commentToDelete.comment_id!!)
+                .delete()
+                .addOnSuccessListener {
+                    commentList.removeAt(position)
+                    notifyItemRemoved(position)
+                }
+                .addOnFailureListener { e ->
+                    // 로그를 출력하거나 사용자에게 에러 메시지를 표시합니다.
+                }
+        } else {
+            Toast.makeText(context, "You can't delete the comment.", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

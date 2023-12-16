@@ -88,10 +88,24 @@ class NaviActivity : AppCompatActivity() {
                 // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
                 // Create an Intent to start the LoginActivity
                 val intent = Intent(this, LogInActivity::class.java)
+
+                Log.d("ITM","Fuck OFF")
+                Log.d("ITM", "fromLogin: ${intent.getStringExtra("fromLogin")}")
+                Log.d("ITM", "Firebase.auth.currentUser: ${Firebase.auth.currentUser}")
+
+
+                // Optional: Add any extra information to the intent
+                // intent.putExtra("key", "value")
+
                 // Start the LoginActivity
                 startActivity(intent)
                 finish()
             }
+        }
+        // 수호 로그인일때 허용.
+        else if (intent.getStringExtra("fromLogin") == "suho"){
+            intent.removeExtra("fromLogin")
+            Log.d("ITM","Current userUid = ${CurrentUser.getUserUid}")
         }
     }
 
