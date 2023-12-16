@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/loginbkg"
+    android:background="@drawable/new_loginbkg"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity">
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="WELCOME!"
                 android:textAlignment="center"
-                android:textColor="@color/lavender"
+                android:textColor="@color/st_blue"
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
-                android:backgroundTint="@color/lavender"
+                android:backgroundTint="@color/st_blue"
                 android:text="LOGIN"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
@@ -76,7 +76,7 @@
                 android:backgroundTint="@color/white"
                 android:text="@string/register"
                 android:textAlignment="center"
-                android:textColor="@color/lavender"
+                android:textColor="@color/st_blue"
                 android:textSize="15dp" />
 
             <Button
@@ -86,7 +86,7 @@
                 android:backgroundTint="@color/white"
                 android:text="Let's go to Navi"
                 android:textAlignment="center"
-                android:textColor="@color/lavender"
+                android:textColor="@color/st_blue"
                 android:textSize="15dp" />
 
             <View
@@ -103,10 +103,10 @@
                 android:layout_marginTop="20dp"
                 android:drawableLeft="@drawable/google_logo_size"
                 android:text="GOOGLE Login"
-                android:textColor="@color/lavender"
+                android:textColor="@color/st_blue"
                 android:textSize="18sp"
                 app:cornerRadius="20dp"
-                app:strokeColor="@color/lavender"
+                app:strokeColor="@color/st_blue"
                 app:strokeWidth="2dp" />
 
 
