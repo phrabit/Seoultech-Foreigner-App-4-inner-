@@ -23,6 +23,9 @@ import com.example.a4_inner.fragments.MapFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import android.view.View
+import com.example.a4_inner.FragmentTags.TAG_HOME
+import com.example.a4_inner.FragmentTags.TAG_TIMETABLE
 
 
 class NaviActivity : AppCompatActivity() {
@@ -33,7 +36,11 @@ class NaviActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNaviBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setFragment(FragmentTags.TAG_HOME, HomeFragment())
+        if (FireBase.firebase_online == false) {
+            setFragment(TAG_TIMETABLE, TimetableFragment())
+        } else {
+            setFragment(TAG_HOME, HomeFragment())
+        }
 
         binding.cameraBtn.setOnClickListener{
             val packageName = "com.google.android.apps.translate"
@@ -115,6 +122,24 @@ class NaviActivity : AppCompatActivity() {
     }
 
     public fun setFragment(tag:String, fragment: Fragment) {
+        if(FireBase.firebase_online == false){
+            if(tag == TAG_TIMETABLE){
+                val manager: FragmentManager = supportFragmentManager
+                val fragTransaction = manager.beginTransaction()
+                val navigationView = findViewById<BottomNavigationView>(R.id.navigationView)
+                if (manager.findFragmentByTag(tag) == null) {
+                    fragTransaction.add(R.id.mainFrameLayout, fragment, tag)
+                }
+                val timetable = manager.findFragmentByTag(TAG_TIMETABLE)
+
+                if (timetable != null) {
+                    fragTransaction.show(timetable)
+                }
+                navigationView.menu[2].isChecked = true
+                fragTransaction.commitAllowingStateLoss()
+            }
+            return
+        }
         val manager: FragmentManager = supportFragmentManager
         val fragTransaction = manager.beginTransaction()
 
@@ -129,6 +154,8 @@ class NaviActivity : AppCompatActivity() {
         val ar = manager.findFragmentByTag(FragmentTags.TAG_AR)
 
         val navigationView = findViewById<BottomNavigationView>(R.id.navigationView)
+        binding.myPageBtn.visibility = View.VISIBLE
+        binding.cameraBtn.visibility = View.VISIBLE
         if (home != null) {
             fragTransaction.hide(home)
         }
@@ -160,6 +187,8 @@ class NaviActivity : AppCompatActivity() {
             }
             navigationView.menu[1].setChecked(true)
         } else if (tag == FragmentTags.TAG_TIMETABLE) {
+            binding.myPageBtn.visibility = View.INVISIBLE
+            binding.cameraBtn.visibility = View.INVISIBLE
             if (timetable != null) {
                 fragTransaction.show(timetable)
             }

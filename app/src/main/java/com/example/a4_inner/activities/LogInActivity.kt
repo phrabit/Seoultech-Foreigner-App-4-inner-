@@ -1,7 +1,11 @@
 package com.example.a4_inner.activities
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -23,7 +27,8 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import java.util.Date
-
+import androidx.activity.result.ActivityResult
+import com.example.a4_inner.FireBase
 
 class LogInActivity : AppCompatActivity() {
 
@@ -35,16 +40,7 @@ class LogInActivity : AppCompatActivity() {
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)!!
-                    firebaseAuthWithGoogle(account.idToken!!)
-                    Log.d("ITM", "firebaseAuthWithGoogle: " + account.id)
-                } catch (e: ApiException) {
-                    Log.w("ITM", "Google sign in failed: " + e.message)
-                }
-            }
+            handleGoogleSignInResult(result)
         }
 
     override fun onStart() {
@@ -61,7 +57,7 @@ class LogInActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
+//            .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
@@ -105,23 +101,26 @@ class LogInActivity : AppCompatActivity() {
         }
 
         binding.loginButton.setOnClickListener {
-            if (binding.username.text.toString() == "user" && binding.password.text.toString() == "1234") {
-
-                // 수호를 위한 로그인 id : user, pw : 1234
-                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Login Failed!", Toast.LENGTH_SHORT).show()
-            }
+            performLocalLogin()
         }
 
         binding.googleLoginButton.setOnClickListener {
             gSignInFun()
         }
     }
+    // local login
+    private fun performLocalLogin() {
+        if (binding.username.text.toString() == "user" && binding.password.text.toString() == "1234") {
+            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Login Failed!", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun updateUI(user: FirebaseUser?) { //update ui code here
         if (user != null) {
             userAssign(user)
+            FireBase.firebase_online = true
             val intent = Intent(this, NaviActivity::class.java)
             intent.putExtra("fromLogin", "true")
             startActivity(intent)
@@ -142,6 +141,32 @@ class LogInActivity : AppCompatActivity() {
         googleSignInClient.signOut()
         val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
+    }
+
+    private fun handleGoogleSignInResult(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)!!
+                firebaseAuthWithGoogle(account.idToken!!)
+                Log.d("ITM", "firebaseAuthWithGoogle: " + account.id)
+            } catch (e: ApiException) {
+                Log.w("ITM", "Google sign in failed: " + e.message)
+            }
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle("Offline Login")
+                .setMessage("You are offline. Would you like to try offline login?")
+                .setPositiveButton("Yes") { _, _ ->
+                    // Offline 로그인 수행
+                    FireBase.firebase_online = false
+                    val intent = Intent(this, NaviActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
