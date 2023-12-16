@@ -79,7 +79,7 @@ class MyPageActivity : AppCompatActivity() {
                                     Log.d("ITM", "Photo URL successfully updated.")
                                     // 이미지가 성공적으로 업데이트되면 Glide로 이미지 다시 로드
                                     Glide.with(this@MyPageActivity)
-                                        .load(downloadUri)
+                                        .load(CurrentUser.getPhotoUrl)
                                         .placeholder(R.drawable.user) // Placeholder image while loading
                                         .error(R.drawable.user) // Error image if loading fails
                                         .circleCrop()
@@ -119,13 +119,13 @@ class MyPageActivity : AppCompatActivity() {
         this.onBackPressedDispatcher.addCallback(this, callback)
 
         //  Assuming you have the user's photo URI stored in a variable named photoUri
+        //  onCreate 내부에서 사용할 변수 선언
         val photoUrl: Uri? = CurrentUser.getPhotoUrl
 
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView2
-        val userNameText: TextView = binding.nameText
 
-        userNameText.text = CurrentUser.getName
+        binding.nameText.text = CurrentUser.getName
 
         // Load the user's photo into the ImageView using Glide
         Glide.with(this)
@@ -135,24 +135,29 @@ class MyPageActivity : AppCompatActivity() {
             .circleCrop()
             .into(userPhotoImageView)
 
-        userPhotoImageView.setOnClickListener {
-            // 이미지 뷰를 클릭하면 이미지 선택 인텐트를 시작
-            pickImageResultLauncher.launch("image/*")
-        }
-
         binding.gradeSpinner.adapter = adapter
 
         // EDIT ON/OFF
         binding.editBtn.setOnClickListener {
             val isInEditMode = binding.editBtn.text == "Edit Profile"
             toggleEditMode(isInEditMode)
-            binding.depEditText.setText(CurrentUser.department)
-            binding.stuNumEditText.setText(CurrentUser.stuNum)
-            binding.nationEditText.setText(CurrentUser.nation)
+            // 값이 정의되어 있지 않을 때, EditText 뷰의 초기값을 설정하지 않음
+            if (CurrentUser.department != "NOT SET YET") {
+                binding.depEditText.setText(CurrentUser.department)
+            }
+            if (CurrentUser.stuNum != "NOT SET YET") {
+                binding.stuNumEditText.setText(CurrentUser.stuNum)
+            }
+            if (CurrentUser.nation != "NOT SET YET") {
+                binding.nationEditText.setText(CurrentUser.nation)
+            }
 
-            val gradeIndex = grades.indexOf(CurrentUser.grade)
-            if (gradeIndex != -1) {
-                binding.gradeSpinner.setSelection(gradeIndex)
+            // 값이 정의되어 있지 않을 때, Spinner의 초기값을 설정하지 않음
+            if (CurrentUser.grade != "NOT SET YET") {
+                val gradeIndex = grades.indexOf(CurrentUser.grade)
+                if (gradeIndex != -1) {
+                    binding.gradeSpinner.setSelection(gradeIndex)
+                }
             }
         }
 
@@ -226,6 +231,13 @@ class MyPageActivity : AppCompatActivity() {
             binding.depText.setTextColor(Color.BLACK)
             binding.nationText.setTextColor(Color.BLACK)
             binding.stuNumText.setTextColor(Color.BLACK)
+            // 수정 모드 종료 시에는 이미지 클릭 이벤트 리스너 제거
+            binding.userPhotoImageView2.setOnClickListener(null)
+        } else {
+            // 이미지 클릭 시 이벤트 리스너 등록
+            binding.userPhotoImageView2.setOnClickListener {
+                pickImageResultLauncher.launch("image/*")
+            }
         }
 
         val visibilityInEditMode = if (isInEditMode) View.VISIBLE else View.GONE

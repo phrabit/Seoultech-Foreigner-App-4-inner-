@@ -87,7 +87,7 @@ class HomeFragment : Fragment() {
             .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
             .commit()
         Glide.with(this)
-            .load(photoUrl)
+            .load(CurrentUser.getPhotoUrl)
             .placeholder(R.drawable.user) // Placeholder image while loading
             .error(R.drawable.user) // Error image if loading fails
             .circleCrop()
