@@ -84,13 +84,11 @@ class NaviActivity : AppCompatActivity() {
         // 만약 로그인 액티비티에서 넘어왔다면
         if (intent.getStringExtra("fromLogin") == "true") {
             val userAuth = Firebase.auth.currentUser
-            val db = FirebaseFirestore.getInstance()
-
             if (userAuth != null) {
                 Toast.makeText(this, "Welcome, ${CurrentUser.getName}!", Toast.LENGTH_SHORT).show()
                 intent.removeExtra("fromLogin")
                 // 추가정보 입력 확인 과정
-                val docRef = db.collection("users").document(userAuth.uid)
+                val docRef = FireBase.db.collection("users").document(CurrentUser.getUserUid!!)
                 docRef.get()
                     .addOnSuccessListener { document ->
                         if (document != null) {
