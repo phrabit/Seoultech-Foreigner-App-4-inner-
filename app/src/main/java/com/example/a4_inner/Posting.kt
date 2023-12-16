@@ -52,7 +52,7 @@ class Posting : AppCompatActivity() {
         val title = intent.getStringExtra("Title")
         val contents = intent.getStringExtra("Contents")
         val postId = intent.getStringExtra("PostId")  // 문서 ID를 받아옵니다.
-
+        watchComments()
         // 받아온 데이터를 TextView에 설정
         binding.itemTitle.text = title
 
@@ -80,7 +80,6 @@ class Posting : AppCompatActivity() {
             Log.d("ITM", "Button clicked - After addComment()")
         }
 
-        watchComments()
 
         /////////////////////////////////////////////////////////////////
 
@@ -91,7 +90,6 @@ class Posting : AppCompatActivity() {
         binding.imageButton.setOnClickListener {
             showOptionsDialog(adapter, postId!!)
         }
-
     }
 
     override fun onDestroy() {
@@ -142,6 +140,8 @@ class Posting : AppCompatActivity() {
                 postId?.let {
                     FireBase.db.collection("Board").document(it)
                         .update("comments", FieldValue.arrayUnion(newCommentId))
+                }?.addOnCompleteListener {
+                    watchComments()
                 }
 
                 // RecyclerView 갱신
