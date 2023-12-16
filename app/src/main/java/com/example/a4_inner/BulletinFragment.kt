@@ -18,7 +18,7 @@ import kotlinx.coroutines.MainScope
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
+private const val TAG_HOME = "home_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [BulletinFragment.newInstance] factory method to
@@ -50,8 +50,8 @@ class BulletinFragment : Fragment() {
         // Firestore에서 데이터 가져와 RecyclerView 업데이트
         fetchDataFromFirestore()
 
-        // 남섭이형을 위해 최근게시물 3개 불러오는 함수 호출.
-        fetchRecentBulletinData()
+//        // 남섭이형을 위해 최근게시물 3개 불러오는 함수 호출.
+//        fetchRecentBulletinData()
 
         return binding.root
     }
@@ -140,11 +140,12 @@ class BulletinFragment : Fragment() {
                                 )
                             }
                         }
-
+                        val home_fragment = (requireActivity() as? NaviActivity)?.supportFragmentManager?.findFragmentByTag(TAG_HOME) as? HomeFragment
                         // RecyclerView 데이터 업데이트
                         list.clear()
                         list.addAll(newDataList)
                         adapter.notifyDataSetChanged()
+                        fetchRecentBulletinData(home_fragment)
                     } else {
                         Log.d("ITM", "Current data: null")
                     }

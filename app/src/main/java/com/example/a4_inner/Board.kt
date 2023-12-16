@@ -41,7 +41,7 @@ object RecentBulletinData {
     }
 }
 
-fun fetchRecentBulletinData() {
+fun fetchRecentBulletinData(home_fragment : HomeFragment?) {
     MainScope().launch {
         FireBase.db.collection("Board")
             .orderBy("creationTime", Query.Direction.DESCENDING)
@@ -71,6 +71,7 @@ fun fetchRecentBulletinData() {
 
                 // 최근 3개의 게시물 데이터를 싱글톤에 저장
                 RecentBulletinData.setRecentBulletinList(recentBulletinList)
+                home_fragment?.refresh()
             }
             .addOnFailureListener { exception ->
                 Log.e("ITM", "Error getting recent documents: ", exception)

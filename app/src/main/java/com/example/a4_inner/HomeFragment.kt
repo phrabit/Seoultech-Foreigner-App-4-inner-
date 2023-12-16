@@ -48,6 +48,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
         return binding.root
     }
     fun refresh() {
@@ -63,6 +64,12 @@ class HomeFragment : Fragment() {
             Log.d("ITM", "refresh the today class")
             today_class_fragment.getTodayClassData()
         }
+
+        val recent_post_fragment = childFragmentManager.findFragmentById(R.id.recentPostFragment)
+        if(recent_post_fragment is RecentPostFragment){
+            Log.d("ITM", "refresh the today class")
+            recent_post_fragment.refresh()
+        }
     }
     override fun onResume() {
         super.onResume()
@@ -71,10 +78,13 @@ class HomeFragment : Fragment() {
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView
         childFragmentManager.beginTransaction()
-            .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
+            .add(R.id.todayClassFragment, TodayClassFragment(), "todayClassFragment")
             .commit()
         childFragmentManager.beginTransaction()
-            .add(R.id.todayClassFragment, TodayClassFragment(), "todayClassFragment")
+            .add(R.id.recentPostFragment, RecentPostFragment(), "recentPostFragment")
+            .commit()
+        childFragmentManager.beginTransaction()
+            .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
             .commit()
         Glide.with(this)
             .load(photoUrl)
