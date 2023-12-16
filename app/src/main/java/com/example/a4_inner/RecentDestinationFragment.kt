@@ -18,7 +18,7 @@ import com.example.a4_inner.databinding.FragmentTimetableBinding
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val TAG_MAP = "map_fragment"
-
+private const val TAG_RECENT_DEST = "recent_dest_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [RecentDestinationFragment.newInstance] factory method to

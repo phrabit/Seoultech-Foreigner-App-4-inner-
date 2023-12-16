@@ -24,6 +24,7 @@ private const val TAG_BULLETIN = "bulletin_fragment"
 private const val TAG_TIMETABLE = "timetable_fragment"
 private const val TAG_MAP = "map_fragment"
 private const val TAG_AR = "ar_fragment"
+private const val TAG_TODAY_CLASS = "today_class_fragment"
 private const val TAG_RECENT_DEST = "recent_dest_fragment"
 
 class NaviActivity : AppCompatActivity() {
@@ -35,7 +36,6 @@ class NaviActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityNaviBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setFragment(TAG_HOME, HomeFragment())
@@ -122,11 +122,9 @@ class NaviActivity : AppCompatActivity() {
         val timetable = manager.findFragmentByTag(TAG_TIMETABLE)
         val map = manager.findFragmentByTag(TAG_MAP)
         val ar = manager.findFragmentByTag(TAG_AR)
-        val recentDest = manager.findFragmentByTag(TAG_RECENT_DEST)
+        val today_class = manager.findFragmentByTag(TAG_TODAY_CLASS)
+        val recent_dest = manager.findFragmentByTag(TAG_RECENT_DEST)
 
-        if(recentDest == null){
-            Log.d("lololol", "Asdasd")
-        }
         if (home != null) {
             fragTransaction.hide(home)
         }

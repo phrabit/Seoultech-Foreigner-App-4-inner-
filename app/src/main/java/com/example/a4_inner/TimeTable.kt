@@ -47,7 +47,7 @@ data class TimetableItem(
     val classroom: String
 )
 
-fun loadTimetableDataForToday() {
+fun loadTimetableDataForToday(home_fragment : TodayClassFragment?) {
     val currentDate = getCurrentDate()
     val currentDay = getDayOfWeek(currentDate)
 
@@ -71,6 +71,11 @@ fun loadTimetableDataForToday() {
             // 여기에서 오늘의 시간표 데이터를 사용할 수 있습니다.
             // 예를 들어, 시간표의 첫 번째 항목의 이름을 출력하거나 할 수 있습니다.
             Log.d("ITM", "First class of today: ${todayTimetable[0].className}")
+        }
+
+        if(home_fragment != null){
+            Log.d("ITM", "REFRESH!")
+            home_fragment.refresh()
         }
     }
 }

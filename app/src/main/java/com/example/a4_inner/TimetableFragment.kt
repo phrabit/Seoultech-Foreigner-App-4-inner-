@@ -25,7 +25,8 @@ import java.util.Locale
 // TODO: Rename parameter arguments, choose names that match
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
+private const val TAG_HOME = "home_fragment"
+private const val TAG_TODAY_CLASS = "today_class_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [TimetableFragment.newInstance] factory method to
@@ -38,15 +39,18 @@ class TimetableFragment : Fragment() {
     lateinit var binding: FragmentTimetableBinding
     val timeTableDB:TimeTableDB by lazy {TimeTableDB.getInstance(this.requireContext())}
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+//        loadTimetableData()
+//
+//        loadTimetableDataForToday()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
-
-        loadTimetableDataForToday()
     }
 
     override fun onCreateView(
@@ -54,7 +58,6 @@ class TimetableFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTimetableBinding.inflate(inflater, container, false)
-
         binding.addBtn.setOnClickListener {
             // 입력할 수 있는 팝업창이 나오도록 하기
             showAddClassDialog()
@@ -66,73 +69,7 @@ class TimetableFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-        loadTimetableData()
     }
-
-    fun loadTimetableData() {
-        val userId = CurrentUser.getUserUid
-        val timetableRef = FirebaseFirestore.getInstance()
-            .collection("Timetable")
-            .document(userId.toString())
-
-        timetableRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.data!=null) {
-                    Log.d("ITM", "DocumentSnapshot data: ${document.data}")
-                    Log.d("ITM","hello?")
-
-                    val timetableInfo = document.data as Map<String, Any>
-
-                    // RoomDB 작업
-                    val timetableDao = TimeTableDB.getInstance(requireContext()).timetableDAO()
-
-                    // 데이터를 불러올 때마다 기존 데이터를 삭제합니다.
-                    timetableDao.deleteAll()
-
-                    for ((day, info) in timetableInfo) {
-                        val dayInfo = info as Map<String, Any>
-                        for ((_, classInfo) in dayInfo) {
-                            val classInfoDetails = classInfo as Map<String, List<String>>
-                            for ((_, classInfo) in classInfoDetails) {
-                                val period = classInfo[0]
-                                val className = classInfo[1]
-                                val selectedClassRoom = classInfo[2]
-                                val classroom = classInfo[3]
-
-
-                                // Apply the loaded data to your app
-                                applyBackgroundColor(day, period.split(" ")[0].toInt(), period.split(" ")[1].toInt(), className, selectedClassRoom, classroom)
-
-                                // 데이터를 Room에 저장
-                                timetableDao.insert(TimeTable(0, day, period, className, selectedClassRoom, classroom))
-
-                            }
-                        }
-                    }
-
-                    // 삽입 후 모든 데이터 가져오기
-                    val allData = timetableDao.getAll()
-                    allData.forEach { data ->
-                        Log.d("RoomDB", data.toString())
-                    }
-
-                } else {
-                    Log.d("ITM", "No such document")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("ITM", "get failed with ", exception)
-            }
-    }
-
-
-
-
-
-
-
-
 
     private fun showAddClassDialog() {
         val builder = AlertDialog.Builder(requireContext())
@@ -198,12 +135,16 @@ class TimetableFragment : Fragment() {
                 )
             )
 
-            timetableRef.set(timetableInfo, SetOptions.merge())
+            val job = timetableRef.set(timetableInfo, SetOptions.merge()).addOnCompleteListener {
+                ((requireActivity() as? NaviActivity)!!.supportFragmentManager.findFragmentByTag(TAG_HOME) as? HomeFragment)?.refresh()
+                Log.d("ITM", "job complete!")
+            }
 
             // TimetableFragment에 메서드를 호출하여 선택된 정보를 이용하여 셀에 색칠
             applyBackgroundColor(selectedDayOfWeek, selectedStartPeriod.toInt(), selectedEndPeriod.toInt(), className, selectedClassRoom, classroom)
 
             dialog.dismiss()
+
         }
 
         builder.setNegativeButton("Cancel") { dialog, _ ->

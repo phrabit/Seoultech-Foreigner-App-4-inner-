@@ -36,7 +36,9 @@ class HomeFragment : Fragment() {
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
-
+    public fun test(){
+        Log.d("ITM", "here journey!")
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -46,24 +48,33 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         return binding.root
     }
     fun refresh() {
+        Log.d("ITM", "refresh the home")
         val recent_dest_fragment = childFragmentManager.findFragmentById(R.id.recentDestinationFragment)
         if(recent_dest_fragment is RecentDestinationFragment){
+            Log.d("ITM", "refresh the recent dest")
             recent_dest_fragment.redraw()
+        }
+
+        val today_class_fragment = childFragmentManager.findFragmentById(R.id.todayClassFragment)
+        if(today_class_fragment is TodayClassFragment){
+            Log.d("ITM", "refresh the today class")
+            today_class_fragment.getTodayClassData()
         }
     }
     override fun onResume() {
         super.onResume()
-        Log.d("pref", "ASdadasdadd")
         // Load the user's photo into the ImageView using Glide
         val photoUrl: Uri? = CurrentUser.getPhotoUrl
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView
         childFragmentManager.beginTransaction()
             .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
+            .commit()
+        childFragmentManager.beginTransaction()
+            .add(R.id.todayClassFragment, TodayClassFragment(), "todayClassFragment")
             .commit()
         Glide.with(this)
             .load(photoUrl)
