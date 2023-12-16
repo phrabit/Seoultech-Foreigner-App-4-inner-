@@ -132,6 +132,7 @@ fun loadTimetableDataForDay(day: String, callback: () -> Unit) {
         }
         .addOnFailureListener { exception ->
             Log.d("ITM", "데이터 가져오기 실패: ", exception)
+
         }
 }
 

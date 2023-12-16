@@ -140,11 +140,11 @@ class BulletinFragment : Fragment() {
                                 )
                             }
                         }
-                        val home_fragment = (requireActivity() as? NaviActivity)?.supportFragmentManager?.findFragmentByTag(TAG_HOME) as? HomeFragment
                         // RecyclerView 데이터 업데이트
                         list.clear()
                         list.addAll(newDataList)
                         adapter.notifyDataSetChanged()
+                        val home_fragment = (requireActivity() as? NaviActivity)?.supportFragmentManager?.findFragmentByTag(TAG_HOME) as? HomeFragment
                         fetchRecentBulletinData(home_fragment)
                     } else {
                         Log.d("ITM", "Current data: null")

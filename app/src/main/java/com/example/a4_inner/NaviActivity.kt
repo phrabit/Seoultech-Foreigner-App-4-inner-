@@ -8,9 +8,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.a4_inner.databinding.ActivityNaviBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -30,7 +33,7 @@ private const val TAG_RECENT_DEST = "recent_dest_fragment"
 
 class NaviActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityNaviBinding
+    public lateinit var binding: ActivityNaviBinding
 
     // variable for GOOGLE login
 //    private lateinit var auth: FirebaseAuth
@@ -131,7 +134,7 @@ class NaviActivity : AppCompatActivity() {
         }
     }
 
-    public fun setFragment(tag: String, fragment: Fragment) {
+    public fun setFragment(tag:String, fragment: Fragment) {
         val manager: FragmentManager = supportFragmentManager
         val fragTransaction = manager.beginTransaction()
 
@@ -144,9 +147,8 @@ class NaviActivity : AppCompatActivity() {
         val timetable = manager.findFragmentByTag(TAG_TIMETABLE)
         val map = manager.findFragmentByTag(TAG_MAP)
         val ar = manager.findFragmentByTag(TAG_AR)
-        val today_class = manager.findFragmentByTag(TAG_TODAY_CLASS)
-        val recent_dest = manager.findFragmentByTag(TAG_RECENT_DEST)
 
+        val navigationView = findViewById<BottomNavigationView>(R.id.navigationView)
         if (home != null) {
             fragTransaction.hide(home)
         }
@@ -171,24 +173,30 @@ class NaviActivity : AppCompatActivity() {
             if (home != null) {
                 fragTransaction.show(home)
             }
+            navigationView.menu[0].setChecked(true)
         } else if (tag == TAG_BULLETIN) {
             if (bulletin != null) {
                 fragTransaction.show(bulletin)
             }
+            navigationView.menu[1].setChecked(true)
         } else if (tag == TAG_TIMETABLE) {
             if (timetable != null) {
                 fragTransaction.show(timetable)
             }
+            navigationView.menu[2].setChecked(true)
         } else if (tag == TAG_MAP) {
             if (map != null) {
                 fragTransaction.show(map)
             }
+            navigationView.menu[3].setChecked(true)
         } else if (tag == TAG_AR) {
             if (ar != null) {
                 fragTransaction.show(ar)
             }
+            navigationView.menu[4].setChecked(true)
         }
         fragTransaction.commitAllowingStateLoss()
+
     }
 
     private fun showDialog() {

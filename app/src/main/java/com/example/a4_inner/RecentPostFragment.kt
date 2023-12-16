@@ -12,7 +12,8 @@ import com.example.a4_inner.databinding.FragmentRecentPostBinding
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
+private const val TAG_HOME = "home_fragment"
+private const val TAG_BULLETIN = "bulletin_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [RecentPostFragment.newInstance] factory method to
@@ -45,6 +46,11 @@ class RecentPostFragment : Fragment() {
         val recent_posts = RecentBulletinData.getRecentBulletinList()
         for((post, ui) in recent_posts!!.zip(recent_post_txt_list)){
             ui.text = post.title
+            ui.setOnClickListener {
+//                val bulletin_fragment = requireActivity().supportFragmentManager.findFragmentByTag(
+//                    TAG_BULLETIN)
+                (requireActivity() as? NaviActivity)?.setFragment(TAG_BULLETIN, BulletinFragment())
+            }
         }
     }
     companion object {
