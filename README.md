@@ -23,7 +23,7 @@
 : For Domestic students who want to become friends with foreigners
 
 -----------------------
-### 1. function list
+## function list
 
 |Category|Function|
 |------|---|
