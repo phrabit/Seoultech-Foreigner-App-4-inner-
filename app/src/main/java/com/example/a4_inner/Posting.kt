@@ -29,7 +29,6 @@ class Posting : AppCompatActivity() {
     private val commentList: ArrayList<Comment> = ArrayList()
 
     private lateinit var commentListener: ListenerRegistration
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private var postId: String? = null
 
@@ -120,11 +119,7 @@ class Posting : AppCompatActivity() {
         }
 
         // 댓글 ID 생성
-        val newCommentId = firestore.collection("Comment").document().id
-
-        // 이미지 리소스 가져오기
-//        val drawableId: Int = R.drawable.user
-//        val imageDrawable: Drawable? = ContextCompat.getDrawable(this, drawableId)
+        val newCommentId = FireBase.db.collection("Comment").document().id
 
         // 댓글 목록에 추가
         val newComment = Comment(
@@ -138,14 +133,14 @@ class Posting : AppCompatActivity() {
         commentList.add(newComment)
 
         // Firebase Firestore에 댓글 추가
-        firestore.collection("Comment").document(newCommentId)
+        FireBase.db.collection("Comment").document(newCommentId)
             .set(newComment)
             .addOnSuccessListener {
                 Log.d("ITM", "댓글 추가 성공, document ID: $newCommentId")
 
                 // 게시글의 comments 필드 업데이트
                 postId?.let {
-                    firestore.collection("Board").document(it)
+                    FireBase.db.collection("Board").document(it)
                         .update("comments", FieldValue.arrayUnion(newCommentId))
                 }
 
@@ -167,7 +162,7 @@ class Posting : AppCompatActivity() {
     private fun watchComments() {
         val postId = intent.getStringExtra("PostId")
         if (postId != null) {
-            firestore.collection("Comment")
+            FireBase.db.collection("Comment")
                 .whereEqualTo("postId", postId)
                 .orderBy("creationTime")
                 .addSnapshotListener { snapshot, error ->
@@ -257,7 +252,7 @@ class Posting : AppCompatActivity() {
     private fun deletePost() {
         val postId = intent.getStringExtra("PostId")  // Intent에서 PostId를 받아옵니다.
         if (postId != null) {
-            firestore.collection("Board").document(postId)
+            FireBase.db.collection("Board").document(postId)
                 .delete()
                 .addOnSuccessListener {
                     Log.d("ITM", "Post successfully deleted!")
