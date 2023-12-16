@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/naviActivity"
     android:orientation="vertical">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -21,8 +22,8 @@
 
     <FrameLayout
         android:id="@+id/mainFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="800dp"
+        android:layout_width="408dp"
+        android:layout_height="808dp"
         android:background="@color/st_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"

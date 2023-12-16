@@ -60,7 +60,7 @@ class RecentDestinationFragment : Fragment() {
                 else{
                     (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination1Btn.text.toString())
                 }
-                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment)
+                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, R.id.mapFragment, map_fragment)
             }
         }
         else{
@@ -76,7 +76,7 @@ class RecentDestinationFragment : Fragment() {
                 else{
                     (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination2Btn.text.toString())
                 }
-                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment!!)
+                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, R.id.mapFragment, map_fragment!!)
             }
         }
         else{
@@ -92,7 +92,7 @@ class RecentDestinationFragment : Fragment() {
                 else{
                     (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination3Btn.text.toString())
                 }
-                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment!!)
+                (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, R.id.mapFragment, map_fragment!!)
             }
         }
         else{

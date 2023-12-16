@@ -1,5 +1,7 @@
 package com.example.a4_inner
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -57,6 +59,9 @@ class TodayClassFragment : Fragment() {
             for((lecture,ui) in today_class_list.zip(lecture_txt_list)){
                 ui.text = lecture.className
                 ui.visibility = View.VISIBLE
+                ui.setOnClickListener {
+                    showDialog(lecture)
+                }
             }
         }
         else{
@@ -66,6 +71,17 @@ class TodayClassFragment : Fragment() {
                 ui.visibility = View.INVISIBLE
             }
         }
+    }
+    fun showDialog(lecture : TimetableItem){
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Class Info")
+            .setMessage("Class name: ${lecture.className}\n" +
+                    "Class day: ${lecture.day}\n" +
+                    "Class time: ${lecture.startPeriod} ~ ${lecture.endPeriod}\n"+
+                    "Class location: ${lecture.classroom}\n" +
+                    "Class room: ${lecture.selectedClassRoom}\n")
+            .create()
+            .show()
     }
     companion object {
         /**

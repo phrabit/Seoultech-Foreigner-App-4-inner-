@@ -162,7 +162,7 @@ class Posting : AppCompatActivity() {
     private fun watchComments() {
         val postId = intent.getStringExtra("PostId")
         if (postId != null) {
-            FireBase.db.collection("Comment")
+            val listener = FireBase.db.collection("Comment")
                 .whereEqualTo("postId", postId)
                 .orderBy("creationTime")
                 .addSnapshotListener { snapshot, error ->
@@ -182,7 +182,7 @@ class Posting : AppCompatActivity() {
                         commentAdapter.notifyDataSetChanged()
                     }
                 }
-
+            listener.remove()
         }
         else {
             Log.e("ITM", "No PostId passed in intent")
