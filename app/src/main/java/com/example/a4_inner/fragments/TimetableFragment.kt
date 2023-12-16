@@ -74,8 +74,6 @@ class TimetableFragment : Fragment() {
             .collection("Timetable")
             .document(userId.toString())
 
-        FireBase.firebase_online = true
-
         // 1. Firestore의 flag 변수 확인
         if (FireBase.firebase_online!!) { // flag가 True인 경우
             // Firestore에서 데이터를 불러옵니다.

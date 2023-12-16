@@ -28,11 +28,11 @@ class Post : AppCompatActivity() {
 
         // 받아온 데이터를 EditText에 설정
         binding.titleInsert.setText(originalTitle)
-        binding.contentsInsert.setText(originalContents)
+        binding.contentsEditText.setText(originalContents)
 
         binding.completeBtn.setOnClickListener {
             val title = binding.titleInsert.text.toString()
-            val contents = binding.contentsInsert.text.toString()
+            val contents = binding.contentsEditText.text.toString()
 
             // 데이터가 비어있는지 확인
             if (title.isNotEmpty() && contents.isNotEmpty()) {

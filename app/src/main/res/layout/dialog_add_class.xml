@@ -49,6 +49,6 @@
         android:id="@+id/editClassroom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Class Name"/>
+        android:hint="Classroom"/>
 
 </LinearLayout>
