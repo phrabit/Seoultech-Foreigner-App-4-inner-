@@ -95,7 +95,7 @@ class NaviActivity : AppCompatActivity() {
         }
     }
 
-    private fun setFragment(tag: String, fragment: Fragment) {
+    public fun setFragment(tag: String, fragment: Fragment) {
         val manager: FragmentManager = supportFragmentManager
         val fragTransaction = manager.beginTransaction()
 
