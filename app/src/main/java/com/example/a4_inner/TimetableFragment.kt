@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.example.a4_inner.databinding.FragmentTimetableBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -173,6 +174,10 @@ class TimetableFragment : Fragment() {
                         textFlag = true
                     }
 
+                    cellView.setOnClickListener {
+                        showDeleteConfirmationDialog(dayOfWeek, startPeriod, endPeriod)
+                    }
+
                     cellView.setBackgroundColor(Color.RED)
                     cellView.setTextColor(Color.WHITE)
 
@@ -180,6 +185,78 @@ class TimetableFragment : Fragment() {
             }
         }
     }
+
+    // 배경색을 원래 색상으로 되돌리wk는 함수
+    private fun revertBackgroundColor(dayOfWeek: String, startPeriod: Int, endPeriod: Int, rootView: View?) {
+        if (rootView != null) {
+            for (p in startPeriod..endPeriod) {
+                val cellId = "$dayOfWeek$p"
+                val cellView = rootView.findViewById<View>(resources.getIdentifier(cellId, "id", requireContext().packageName))
+
+                if (cellView is TextView) {
+                    // 여기에서는 원래 색상을 사용자가 원하는 색상으로 변경해야 합니다.
+                    // 사용자가 지정한 배경색의 리소스 ID를 사용하여 배경색을 설정합니다.
+                    val originalColorResourceId = R.color.st_gray // 여기에 원래 색상의 리소스 ID를 넣어주세요
+                    val originalColor = ContextCompat.getColor(requireContext(), originalColorResourceId)
+
+                    // 배경색과 텍스트 색상을 원래 색상으로 변경
+                    cellView.setBackgroundColor(originalColor)
+                    cellView.setTextColor(Color.BLACK) // 텍스트 색상도 원래대로 변경해주세요
+                }
+            }
+        }
+    }
+
+    private fun showDeleteConfirmationDialog(dayOfWeek: String, startPeriod: Int, endPeriod: Int) {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Delete?")
+        alertDialogBuilder.setMessage("Do you want to delete??")
+
+        alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+            // Room Database에서도 해당 항목 삭제
+            revertBackgroundColor(dayOfWeek, startPeriod, endPeriod, view)
+
+            // Firestore에서 해당 항목 삭제
+            deleteTimetableEntry(dayOfWeek, startPeriod, endPeriod)
+        }
+
+        alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        alertDialogBuilder.create().show()
+    }
+
+    private fun deleteTimetableEntry(dayOfWeek: String, startPeriod: Int, endPeriod: Int) {
+        val userId = CurrentUser.getUserUid
+        val timetableRef = FirebaseFirestore.getInstance()
+            .collection("Timetable")
+            .document(userId.toString())
+
+        timetableRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data!=null) {
+                    val timetableInfo = document.data as MutableMap<String, Any>
+                    val dayInfo = timetableInfo[dayOfWeek] as MutableMap<String, Any>
+
+                    val periodKeyToRemove = dayInfo.keys.find { key ->
+                        val classInfo = dayInfo[key] as Map<String, List<String>>
+                        val period = classInfo.values.first()[0]
+                        val start = period.split(" ")[0].toInt()
+                        val end = period.split(" ")[1].toInt()
+                        startPeriod == start && endPeriod == end
+                    }
+
+                    if (periodKeyToRemove != null) {
+                        dayInfo.remove(periodKeyToRemove)
+                        timetableRef.set(timetableInfo)
+                    }
+                }
+            }
+    }
+
+
+
 
 
     companion object {

@@ -27,4 +27,7 @@ interface TimeTableDAO {
     // 데이터베이스의 전체 데이터 개수를 반환하는 메소드
     @Query("SELECT COUNT(*) FROM Timetable_table")
     fun count(): Int
+
+    @Query("DELETE FROM timetable_table WHERE day_of_week = :dayOfWeek AND period = :period")
+    fun deleteByDayAndPeriod(dayOfWeek: String, period: Int)
 }
