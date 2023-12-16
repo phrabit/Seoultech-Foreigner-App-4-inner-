@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // Load the user's photo into the ImageView using Glide
-        photoUrl = CurrentUser.getPhotoUrl
+        val photoUrl: Uri? = CurrentUser.getPhotoUrl
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView
         childFragmentManager.beginTransaction()

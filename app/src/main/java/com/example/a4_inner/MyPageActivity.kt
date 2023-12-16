@@ -29,12 +29,30 @@ class MyPageActivity : AppCompatActivity() {
     // 뒤로가기 재정의
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            // NaviActivity로 이동하도록 Intent를 생성합니다.
-            val intent = Intent(this@MyPageActivity, NaviActivity::class.java)
-            // 이전의 액티비티 스택을 모두 지우고 새로운 액티비티를 시작합니다.
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
+            // '수정하기' 모드인지 확인
+            if(binding.editBtn.text == "Complete") {
+                // 대화상자를 표시하여 사용자에게 경고
+                AlertDialog.Builder(this@MyPageActivity).apply {
+                    setTitle("")
+                    setMessage("You have unsaved changes. Are you sure you want to leave?")
+                    setPositiveButton("Yes") { _, _ ->
+                        // If the user chooses 'Yes', navigate to NaviActivity
+                        navigateToNaviActivity()
+                    }
+                    setNegativeButton("No", null)
+                    show()
+                }
+            } else {
+                navigateToNaviActivity()
+            }
         }
+    }
+    private fun navigateToNaviActivity() {
+        // NaviActivity로 이동하도록 Intent를 생성합니다.
+        val intent = Intent(this@MyPageActivity, NaviActivity::class.java)
+        // 이전의 액티비티 스택을 모두 지우고 새로운 액티비티를 시작합니다.
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
     }
 
     private val pickImageResultLauncher =
@@ -83,6 +101,10 @@ class MyPageActivity : AppCompatActivity() {
         val grades = arrayOf("1st grade; freshman", "2nd grade; sophomore", "3rd grade; junior", "4th grade; senior")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, grades)
         binding.gradeSpinner.visibility = View.GONE
+        binding.depEditText.visibility = View.GONE
+        binding.nationEditText.visibility = View.GONE
+        binding.stuNumEditText.visibility = View.GONE
+
 
         // 뒤로가기 재정의
         this.onBackPressedDispatcher.addCallback(this, callback)
@@ -107,21 +129,20 @@ class MyPageActivity : AppCompatActivity() {
         userPhotoImageView.setOnClickListener {
             // 이미지 뷰를 클릭하면 이미지 선택 인텐트를 시작
             pickImageResultLauncher.launch("image/*")
-
         }
 
         binding.gradeSpinner.adapter = adapter
 
         binding.editBtn.setOnClickListener {
-            if (binding.editBtn.text == "수정하기") {
+            if (binding.editBtn.text == "Edit Profile") {
                 binding.gradeText.visibility = View.GONE
                 binding.gradeSpinner.visibility = View.VISIBLE
-                binding.editBtn.text = "완료하기"
+                binding.editBtn.text = "Complete"
             } else {
                 binding.gradeText.text = binding.gradeSpinner.selectedItem.toString()
                 binding.gradeSpinner.visibility = View.GONE
                 binding.gradeText.visibility = View.VISIBLE
-                binding.editBtn.text = "수정하기"
+                binding.editBtn.text = "Edit Profile"
             }
         }
 
