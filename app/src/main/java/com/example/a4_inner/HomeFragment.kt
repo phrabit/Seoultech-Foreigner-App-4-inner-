@@ -100,7 +100,6 @@ class HomeFragment : Fragment() {
         val userNameText: TextView = binding.nameTxt
 
         userNameText.text = CurrentUser.getName
-
     }
 
     // destroy view for Fragment

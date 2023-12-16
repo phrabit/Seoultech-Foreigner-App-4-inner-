@@ -156,7 +156,11 @@ class TimetableFragment : Fragment() {
 
         // Spinner에 교시 목록 추가
         val periodList = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-        val periodAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, periodList)
+        val periodAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            periodList
+        )
         spinnerStartPeriod.adapter = periodAdapter
         spinnerEndPeriod.adapter = periodAdapter
 
@@ -169,7 +173,11 @@ class TimetableFragment : Fragment() {
             "(51) The 100th Memorial Hall", "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall", "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall", "(58) Power Plant 2", "(60) Mirae Hall",
             "(61) Changeui Gate", "(62) Techno Cube", "(63) Main Playground")
 
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, classRoomList)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            classRoomList
+        )
         spinnerClassRoom.adapter = adapter
 
         builder.setPositiveButton("Add") { dialog, _ ->
@@ -205,7 +213,14 @@ class TimetableFragment : Fragment() {
             }
 
             // TimetableFragment에 메서드를 호출하여 선택된 정보를 이용하여 셀에 색칠
-            applyBackgroundColor(selectedDayOfWeek, selectedStartPeriod.toInt(), selectedEndPeriod.toInt(), className, selectedClassRoom, classroom)
+            applyBackgroundColor(
+                selectedDayOfWeek,
+                selectedStartPeriod.toInt(),
+                selectedEndPeriod.toInt(),
+                className,
+                selectedClassRoom,
+                classroom
+            )
 
             dialog.dismiss()
 
@@ -220,7 +235,14 @@ class TimetableFragment : Fragment() {
     }
 
 
-    private fun applyBackgroundColor(dayOfWeek: String, startPeriod: Int, endPeriod: Int, className: String, selectedClassRoom: String, classRoom: String) {
+    private fun applyBackgroundColor(
+        dayOfWeek: String,
+        startPeriod: Int,
+        endPeriod: Int,
+        className: String,
+        selectedClassRoom: String,
+        classRoom: String
+    ) {
         // TimetableFragment의 onCreateView에서 Timetable의 각 셀에 해당하는 ID를 찾아 배경색을 변경합니다.
         // 여기서는 간단한 예시로 View를 찾아 직접 배경색 및 텍스트를 변경하도록 하였습니다.
         val rootView = view
@@ -228,11 +250,17 @@ class TimetableFragment : Fragment() {
         if (rootView != null) {
             for (period in startPeriod..endPeriod) {
                 val cellId = "$dayOfWeek$period"
-                val cellView = rootView.findViewById<View>(resources.getIdentifier(cellId, "id", requireContext().packageName))
+                val cellView = rootView.findViewById<View>(
+                    resources.getIdentifier(
+                        cellId,
+                        "id",
+                        requireContext().packageName
+                    )
+                )
 
                 if (cellView is TextView) {
                     // 해당 셀이 TextView로 캐스팅 가능한 경우에만 텍스트 및 배경색 변경
-                    if(!textFlag){
+                    if (!textFlag) {
                         cellView.text = "$className\n$selectedClassRoom $classRoom"
                         textFlag = true
                     }

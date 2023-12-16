@@ -197,13 +197,14 @@ class LogInActivity : AppCompatActivity() {
                 // Document does not exist = First time login
                 if (!documentSnapshot.exists()) {
                     // Uploading user data for DB
-                    db.collection("users").document(user.uid).set(UserData(
-                        user.uid,
-                        user.displayName!!,
-                        Timestamp(Date(user.metadata!!.creationTimestamp)),
-                        user.email!!,
-                        user.photoUrl
-                    ))
+                    val userData = hashMapOf(
+                        "uid" to user.uid,
+                        "displayName" to user.displayName,
+                        "creationTimestamp" to Timestamp(Date(user.metadata!!.creationTimestamp)),
+                        "email" to user.email,
+                        "photoUrl" to user.photoUrl.toString()
+                    )
+                    db.collection("users").document(user.uid).set(userData)
                         .addOnSuccessListener {
                             Log.d("ITM", "DocumentSnapshot added with ID: ${user.uid}")
                         }
@@ -218,6 +219,6 @@ class LogInActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.e("ITM", "error occurred during loading firestore document in userAssign(): $e")
             }
-
     }
+
 }
