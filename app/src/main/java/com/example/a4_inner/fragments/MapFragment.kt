@@ -1,12 +1,9 @@
-package com.example.a4_inner
+package com.example.a4_inner.fragments
 
 //import android.R
-import android.content.Context
 import android.content.pm.PackageManager
-import android.content.pm.PermissionGroupInfo
 import android.graphics.Color
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +14,12 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.example.a4_inner.Dijkstra
+import com.example.a4_inner.Node
+import com.example.a4_inner.PreferenceHelper
+import com.example.a4_inner.R
+import com.example.a4_inner.UniversityEdges
+import com.example.a4_inner.UniversitySites
 import com.example.a4_inner.databinding.FragmentMapBinding
 import com.example.a4_inner.databinding.SelectBuildingBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -29,7 +32,6 @@ import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelManager
-import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.route.RouteLineLayer
@@ -39,7 +41,6 @@ import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.route.RouteLineStyles
 import com.kakao.vectormap.route.RouteLineStylesSet
-import java.security.Permission
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,16 +85,16 @@ class MapFragment : Fragment() {
         mapView.start(object : MapLifeCycleCallback() {
 
             override fun onMapDestroy() {
-                // 지도 API 가 정상적으로 종료될 때 호출됨
+
             }
 
             override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
+
                 Log.d("map", "error:" + error)
             }
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+
                 Log.d("map", "successfully!")
                 line_manager = kakaoMap.routeLineManager!!
                 line_layer = line_manager.getLayer()
@@ -122,20 +123,7 @@ class MapFragment : Fragment() {
         return binding.root
     }
     private fun showDialog() {
-        val items = arrayOf("Building",
-            "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall",
-            "(5) Hyeseong Hall", "(6) Cheongun Hall", "(7) Seoul Technopark",
-            "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond",
-            "(13) Main Gate", "(30) SeoulTech Daycare Center", "(31) Business Incubation Center",
-            "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library",
-            "(35) Central Library Annex", "(36) Suyeon Hall", "(37) Student Union Bldg",
-            "(38) Language Center", "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory",
-            "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate",
-            "(45) Surim Dormitory", "(46) Nuri Dormitory", "(51) The 100th Memorial Hall",
-            "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall",
-            "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall",
-            "(58) Power Plant 2", "(60) Mirae Hall", "(61) Changeui Gate",
-            "(62) Techno Cube", "(63) Main Playground")
+        val items = UniversitySites.building_array
         val builder = AlertDialog.Builder(this.requireContext())
         val dialogBinding = SelectBuildingBinding.inflate(layoutInflater)
         val spinner = dialogBinding.spinner

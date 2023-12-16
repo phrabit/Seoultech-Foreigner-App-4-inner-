@@ -1,9 +1,10 @@
-package com.example.a4_inner
+package com.example.a4_inner.timetable
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.a4_inner.TimeTable
 import com.example.a4_inner.databinding.FragmentTimetableBinding
 
 class TimeTableAdapter(val timetable_list:MutableList<TimeTable>):RecyclerView.Adapter<TimeTableAdapter.ViewHolder>() {

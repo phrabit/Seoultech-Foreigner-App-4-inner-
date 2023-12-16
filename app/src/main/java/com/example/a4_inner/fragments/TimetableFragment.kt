@@ -1,7 +1,6 @@
-package com.example.a4_inner
+package com.example.a4_inner.fragments
 
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -14,20 +13,22 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.FireBase
+import com.example.a4_inner.FragmentTags
+import com.example.a4_inner.R
+import com.example.a4_inner.TimeTable
+import com.example.a4_inner.UniversitySites
+import com.example.a4_inner.timetable.TimeTableDB
+import com.example.a4_inner.activities.NaviActivity
 import com.example.a4_inner.databinding.FragmentTimetableBinding
+import com.example.a4_inner.loadTimetableDataForToday
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import org.checkerframework.checker.units.qual.Current
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-private const val TAG_HOME = "home_fragment"
-private const val TAG_TODAY_CLASS = "today_class_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [TimetableFragment.newInstance] factory method to
@@ -38,7 +39,7 @@ class TimetableFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     lateinit var binding: FragmentTimetableBinding
-    val timeTableDB:TimeTableDB by lazy {TimeTableDB.getInstance(this.requireContext())}
+    val timeTableDB: TimeTableDB by lazy { TimeTableDB.getInstance(this.requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,12 +167,7 @@ class TimetableFragment : Fragment() {
 
 
         // Spinner에 강의실 목록 추가 (이 부분은 프로젝트에 맞게 수정해야 함)
-        val classRoomList = arrayOf("Building", "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall", "(4) Business Incubation Center 2", "(5) Hyeseong Hall", "(6) Cheongun Hall",
-            "(7) Seoul Technopark", "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond", "(13) Main Gate", "(30) SeoulTech Daycare Center",
-            "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library", "(35) Central Library Annex", "(37) Student Union Bldg", "(38) Language Center",
-            "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory", "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate", "(45) Surim Dormitory", "(46) Nuri Dormitory",
-            "(51) The 100th Memorial Hall", "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall", "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall", "(58) Power Plant 2", "(60) Mirae Hall",
-            "(61) Changeui Gate", "(62) Techno Cube", "(63) Main Playground")
+        val classRoomList = UniversitySites.building_array
 
         val adapter = ArrayAdapter(
             requireContext(),
@@ -208,7 +204,9 @@ class TimetableFragment : Fragment() {
             )
 
             val job = timetableRef.set(timetableInfo, SetOptions.merge()).addOnCompleteListener {
-                ((requireActivity() as? NaviActivity)!!.supportFragmentManager.findFragmentByTag(TAG_HOME) as? HomeFragment)?.refresh()
+                ((requireActivity() as? NaviActivity)!!.supportFragmentManager.findFragmentByTag(
+                    FragmentTags.TAG_HOME
+                ) as? HomeFragment)?.refresh()
                 Log.d("ITM", "job complete!")
             }
 
@@ -287,7 +285,9 @@ class TimetableFragment : Fragment() {
                 if (cellView is TextView) {
                     // 여기에서는 원래 색상을 사용자가 원하는 색상으로 변경해야 합니다.
                     // 사용자가 지정한 배경색의 리소스 ID를 사용하여 배경색을 설정합니다.
-                    val originalBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.cell_retrieve)
+                    val originalBackgroundDrawable = ContextCompat.getDrawable(requireContext(),
+                        R.drawable.cell_retrieve
+                    )
                     cellView.background = originalBackgroundDrawable
 
                     cellView.setTextColor(Color.BLACK) // 텍스트 색상도 원래대로 변경해주세요

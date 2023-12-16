@@ -1,13 +1,12 @@
-package com.example.a4_inner
+package com.example.a4_inner.post
 
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.a4_inner.databinding.ActivityPostBinding
+import com.example.a4_inner.FireBase
 import com.example.a4_inner.databinding.ActivityUpdatePostBinding
-import com.google.firebase.firestore.FirebaseFirestore
 
 class updatePost : AppCompatActivity() {
 

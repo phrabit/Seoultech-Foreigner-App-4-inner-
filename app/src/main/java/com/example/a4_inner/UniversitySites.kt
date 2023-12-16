@@ -17,6 +17,20 @@ fun getDistance(src: LatLng, dest: LatLng): Double {
 }
 
 object UniversitySites {
+    val building_array = arrayOf("Building",
+        "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall",
+        "(5) Hyeseong Hall", "(6) Cheongun Hall", "(7) Seoul Technopark",
+        "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond",
+        "(13) Main Gate", "(30) SeoulTech Daycare Center", "(31) Business Incubation Center",
+        "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library",
+        "(35) Central Library Annex", "(36) Suyeon Hall", "(37) Student Union Bldg",
+        "(38) Language Center", "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory",
+        "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate",
+        "(45) Surim Dormitory", "(46) Nuri Dormitory", "(51) The 100th Memorial Hall",
+        "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall",
+        "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall",
+        "(58) Power Plant 2", "(60) Mirae Hall", "(61) Changeui Gate",
+        "(62) Techno Cube", "(63) Main Playground")
     val main_gate = Node("(13) Main Gate", LatLng.from(37.630181, 127.076815))
     val rotary1 = Node("rotary1", LatLng.from(37.631114, 127.077560))
     val rotary2 = Node("rotary2", LatLng.from(37.631788, 127.078471))

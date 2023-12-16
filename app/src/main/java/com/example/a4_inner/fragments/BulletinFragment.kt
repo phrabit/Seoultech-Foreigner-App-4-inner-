@@ -1,4 +1,4 @@
-package com.example.a4_inner
+package com.example.a4_inner.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -9,7 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.a4_inner.Board
+import com.example.a4_inner.FireBase
+import com.example.a4_inner.FragmentTags
+import com.example.a4_inner.activities.NaviActivity
+import com.example.a4_inner.post.Post
+import com.example.a4_inner.post.Posting
+import com.example.a4_inner.R
+import com.example.a4_inner.RecyclerUserAdapter
 import com.example.a4_inner.databinding.FragmentBulletinBinding
+import com.example.a4_inner.fetchRecentBulletinData
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.MainScope
@@ -18,7 +27,6 @@ import kotlinx.coroutines.MainScope
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-private const val TAG_HOME = "home_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [BulletinFragment.newInstance] factory method to
@@ -46,21 +54,12 @@ class BulletinFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBulletinBinding.inflate(inflater, container, false)
-
-        // Firestore에서 데이터 가져와 RecyclerView 업데이트
         fetchDataFromFirestore()
-
-//        // 남섭이형을 위해 최근게시물 3개 불러오는 함수 호출.
-//        fetchRecentBulletinData()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        list.add(Board(ContextCompat.getDrawable(requireContext(), R.drawable.user)!!, "1", "name 1"))
-
         val recyclerView: RecyclerView = binding.lstUser
 
         adapter = RecyclerUserAdapter(list)
@@ -90,7 +89,6 @@ class BulletinFragment : Fragment() {
             val boardData = data?.getSerializableExtra("boardData") as? Board
 
             if (boardData != null) {
-                // Check if the boardData already exists in the list
                 val existingBoard = list.find { it.title == boardData.title && it.contents == boardData.contents }
 
                 if (existingBoard != null) {
@@ -107,8 +105,6 @@ class BulletinFragment : Fragment() {
             Log.d("ITM", "Invalid requestCode or resultCode: requestCode=$requestCode, resultCode=$resultCode")
         }
     }
-
-    // Firestore에서 데이터를 실시간으로 가져오는 함수
     fun fetchDataFromFirestore() {
         MainScope().launch {
             FireBase.db.collection("Board")
@@ -123,7 +119,6 @@ class BulletinFragment : Fragment() {
                         val newDataList = ArrayList<Board>()
 
                         for (document in snapshot) {
-                            // Firestore 문서를 데이터 모델로 변환 (이 경우 Board)
                             val title = document.getString("title")
                             val contents = document.getString("contents")
                             val user_id = document.getString("user_id")
@@ -135,16 +130,17 @@ class BulletinFragment : Fragment() {
                                         title = title!!,
                                         contents = contents!!,
                                         user_id = user_id!!,
-                                        documentId = document.id // 문서 ID를 저장합니다.
+                                        documentId = document.id
                                     )
                                 )
                             }
                         }
-                        // RecyclerView 데이터 업데이트
                         list.clear()
                         list.addAll(newDataList)
                         adapter.notifyDataSetChanged()
-                        val home_fragment = (requireActivity() as? NaviActivity)?.supportFragmentManager?.findFragmentByTag(TAG_HOME) as? HomeFragment
+                        val home_fragment = (requireActivity() as? NaviActivity)?.supportFragmentManager?.findFragmentByTag(
+                            FragmentTags.TAG_HOME
+                        ) as? HomeFragment
                         fetchRecentBulletinData(home_fragment)
                     } else {
                         Log.d("ITM", "Current data: null")
@@ -155,12 +151,10 @@ class BulletinFragment : Fragment() {
 
 
     fun addNewItem(item: Board) {
-        // RecyclerView의 맨 위에 아이템 추가
         list.add(0, item)
         adapter.notifyItemInserted(0)
     }
 
-    // public 메서드를 통해 adapter 반환
     fun getAdapter(): RecyclerUserAdapter {
         return adapter
     }

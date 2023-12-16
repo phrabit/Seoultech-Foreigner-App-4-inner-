@@ -1,7 +1,5 @@
-package com.example.a4_inner
+package com.example.a4_inner.activities
 
-import android.app.Activity
-import android.content.pm.PackageManager
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
@@ -12,33 +10,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.FireBase
+import com.example.a4_inner.FragmentTags
+import com.example.a4_inner.R
+import com.example.a4_inner.fragments.TimetableFragment
 import com.example.a4_inner.databinding.ActivityNaviBinding
+import com.example.a4_inner.fragments.ArFragment
+import com.example.a4_inner.fragments.BulletinFragment
+import com.example.a4_inner.fragments.HomeFragment
+import com.example.a4_inner.fragments.MapFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 
-
-private const val TAG_HOME = "home_fragment"
-private const val TAG_BULLETIN = "bulletin_fragment"
-private const val TAG_TIMETABLE = "timetable_fragment"
-private const val TAG_MAP = "map_fragment"
-private const val TAG_AR = "ar_fragment"
-private const val TAG_TODAY_CLASS = "today_class_fragment"
-private const val TAG_RECENT_DEST = "recent_dest_fragment"
-
 class NaviActivity : AppCompatActivity() {
 
     public lateinit var binding: ActivityNaviBinding
-
-    // variable for GOOGLE login
-//    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNaviBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setFragment(TAG_HOME, HomeFragment())
+        setFragment(FragmentTags.TAG_HOME, HomeFragment())
 
         binding.cameraBtn.setOnClickListener{
             val packageName = "com.google.android.apps.translate"
@@ -46,7 +41,6 @@ class NaviActivity : AppCompatActivity() {
             if (intent != null) {
                 startActivity(intent)
             } else {
-                // 앱이 설치되어 있지 않은 경우, 구글 플레이에서 앱을 찾아 사용자에게 앱 설치를 제안합니다.
                 val playStoreUri = Uri.parse("market://details?id=$packageName")
                 val goToPlayStore = Intent(Intent.ACTION_VIEW, playStoreUri)
                 if (goToPlayStore.resolveActivity(packageManager) != null) {
@@ -63,28 +57,25 @@ class NaviActivity : AppCompatActivity() {
         binding.navigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
-                    setFragment(TAG_HOME, HomeFragment())
-                    val fragment = supportFragmentManager.findFragmentByTag(TAG_HOME)
+                    setFragment(FragmentTags.TAG_HOME, HomeFragment())
+                    val fragment = supportFragmentManager.findFragmentByTag(FragmentTags.TAG_HOME)
                     if (fragment is HomeFragment) {
                         fragment.refresh()
                     }
                 }
-                R.id.bulletin -> setFragment(TAG_BULLETIN, BulletinFragment())
-                R.id.timetable -> setFragment(TAG_TIMETABLE, TimetableFragment())
-                R.id.map -> setFragment(TAG_MAP, MapFragment())
-                R.id.ar -> setFragment(TAG_AR, ArFragment())
+                R.id.bulletin -> setFragment(FragmentTags.TAG_BULLETIN, BulletinFragment())
+                R.id.timetable -> setFragment(FragmentTags.TAG_TIMETABLE, TimetableFragment())
+                R.id.map -> setFragment(FragmentTags.TAG_MAP, MapFragment())
+                R.id.ar -> setFragment(FragmentTags.TAG_AR, ArFragment())
             }
             true
         }
 
-        // User verification
-        // 만약 로그인 액티비티에서 넘어왔다면
         if (intent.getStringExtra("fromLogin") == "true") {
             val userAuth = Firebase.auth.currentUser
             if (userAuth != null) {
                 Toast.makeText(this, "Welcome, ${CurrentUser.getName}!", Toast.LENGTH_SHORT).show()
                 intent.removeExtra("fromLogin")
-                // 추가정보 입력 확인 과정
                 val docRef = FireBase.db.collection("users").document(CurrentUser.getUserUid!!)
                 docRef.get()
                     .addOnSuccessListener { document ->
@@ -105,8 +96,6 @@ class NaviActivity : AppCompatActivity() {
                         Log.d("ITM", "get failed with ", exception)
                     }
             } else {
-                // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
-                // Create an Intent to start the LoginActivity
                 val intent = Intent(this, LogInActivity::class.java)
 
                 Log.d("ITM","Fuck OFF")
@@ -114,10 +103,6 @@ class NaviActivity : AppCompatActivity() {
                 Log.d("ITM", "Firebase.auth.currentUser: ${Firebase.auth.currentUser}")
 
 
-                // Optional: Add any extra information to the intent
-                // intent.putExtra("key", "value")
-
-                // Start the LoginActivity
                 startActivity(intent)
                 finish()
             }
@@ -137,11 +122,11 @@ class NaviActivity : AppCompatActivity() {
             fragTransaction.add(R.id.mainFrameLayout, fragment, tag)
         }
 
-        val home = manager.findFragmentByTag(TAG_HOME)
-        val bulletin = manager.findFragmentByTag(TAG_BULLETIN)
-        val timetable = manager.findFragmentByTag(TAG_TIMETABLE)
-        val map = manager.findFragmentByTag(TAG_MAP)
-        val ar = manager.findFragmentByTag(TAG_AR)
+        val home = manager.findFragmentByTag(FragmentTags.TAG_HOME)
+        val bulletin = manager.findFragmentByTag(FragmentTags.TAG_BULLETIN)
+        val timetable = manager.findFragmentByTag(FragmentTags.TAG_TIMETABLE)
+        val map = manager.findFragmentByTag(FragmentTags.TAG_MAP)
+        val ar = manager.findFragmentByTag(FragmentTags.TAG_AR)
 
         val navigationView = findViewById<BottomNavigationView>(R.id.navigationView)
         if (home != null) {
@@ -164,27 +149,27 @@ class NaviActivity : AppCompatActivity() {
             fragTransaction.hide(ar)
         }
 
-        if (tag == TAG_HOME) {
+        if (tag == FragmentTags.TAG_HOME) {
             if (home != null) {
                 fragTransaction.show(home)
             }
             navigationView.menu[0].setChecked(true)
-        } else if (tag == TAG_BULLETIN) {
+        } else if (tag == FragmentTags.TAG_BULLETIN) {
             if (bulletin != null) {
                 fragTransaction.show(bulletin)
             }
             navigationView.menu[1].setChecked(true)
-        } else if (tag == TAG_TIMETABLE) {
+        } else if (tag == FragmentTags.TAG_TIMETABLE) {
             if (timetable != null) {
                 fragTransaction.show(timetable)
             }
             navigationView.menu[2].setChecked(true)
-        } else if (tag == TAG_MAP) {
+        } else if (tag == FragmentTags.TAG_MAP) {
             if (map != null) {
                 fragTransaction.show(map)
             }
             navigationView.menu[3].setChecked(true)
-        } else if (tag == TAG_AR) {
+        } else if (tag == FragmentTags.TAG_AR) {
             if (ar != null) {
                 fragTransaction.show(ar)
             }

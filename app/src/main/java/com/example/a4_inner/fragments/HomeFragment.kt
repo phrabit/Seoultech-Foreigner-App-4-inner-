@@ -1,9 +1,6 @@
-package com.example.a4_inner
+package com.example.a4_inner.fragments
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,18 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.get
-import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.R
 import com.example.a4_inner.databinding.FragmentHomeBinding
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 
 
 // TODO: Rename parameter arguments, choose names that match

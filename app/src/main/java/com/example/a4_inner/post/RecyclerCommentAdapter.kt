@@ -1,4 +1,4 @@
-package com.example.a4_inner
+package com.example.a4_inner.post
 
 import android.content.Context
 import android.util.Log
@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.R
 import com.google.firebase.firestore.FirebaseFirestore
 
 class RecyclerCommentAdapter(private val commentList: ArrayList<Comment>) : RecyclerView.Adapter<RecyclerCommentAdapter.ViewHolder>() {

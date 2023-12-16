@@ -1,22 +1,21 @@
-package com.example.a4_inner
+package com.example.a4_inner.fragments
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
-import com.example.a4_inner.databinding.FragmentRecentDestinationBinding
+import com.example.a4_inner.TimetableItem
 import com.example.a4_inner.databinding.FragmentTodayClassBinding
+import com.example.a4_inner.loadTimetableDataForToday
+import com.example.a4_inner.todayTimeTable
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-private const val TAG_TODAY_CLASS = "today_class_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [TodayClassFragment.newInstance] factory method to

@@ -1,7 +1,6 @@
-package com.example.a4_inner
+package com.example.a4_inner.activities
 
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +8,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.R
 import com.example.a4_inner.databinding.ActivityLogInBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,27 +17,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.Date
 
 
 class LogInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLogInBinding
-
-    // login variables
-//    lateinit var username: EditText
-//    lateinit var password: EditText
-//    lateinit var loginButton: Button
 
     // google login
     private val auth = Firebase.auth
@@ -56,7 +47,6 @@ class LogInActivity : AppCompatActivity() {
             }
         }
 
-    // 페이지 초기화시에 현재 사용자가 로그인 되어있는지 확인
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -76,9 +66,6 @@ class LogInActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         binding.goNavi.setOnClickListener {
-//            val intent = Intent(this, NaviActivity::class.java)
-//            startActivity(intent) // Add this line to start the activity
-//            finish()
 
             val db = FirebaseFirestore.getInstance()
 
@@ -132,7 +119,6 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
-    // 로그인 시 페이지를 변경하는 코드(UI update)
     private fun updateUI(user: FirebaseUser?) { //update ui code here
         if (user != null) {
             userAssign(user)

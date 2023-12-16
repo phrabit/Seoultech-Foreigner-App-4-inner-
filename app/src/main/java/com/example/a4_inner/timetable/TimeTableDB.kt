@@ -1,8 +1,9 @@
-package com.example.a4_inner
+package com.example.a4_inner.timetable
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.a4_inner.TimeTable
 
 @Database(entities = [TimeTable::class], version = 1)
 abstract class TimeTableDB : RoomDatabase(){
@@ -10,9 +11,9 @@ abstract class TimeTableDB : RoomDatabase(){
 
     companion object{
         @Volatile
-        private var INSTANCE:TimeTableDB? = null
+        private var INSTANCE: TimeTableDB? = null
 
-        fun getInstance(context: Context):TimeTableDB {
+        fun getInstance(context: Context): TimeTableDB {
             return INSTANCE ?: synchronized(this){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,

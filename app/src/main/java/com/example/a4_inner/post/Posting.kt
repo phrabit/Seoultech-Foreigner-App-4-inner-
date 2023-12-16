@@ -1,26 +1,22 @@
-package com.example.a4_inner
+package com.example.a4_inner.post
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.FireBase
 import com.example.a4_inner.databinding.ActivityPostingBinding
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
-import java.security.Timestamp
-import java.util.Calendar
+import java.util.Date
 
 class Posting : AppCompatActivity() {
 
@@ -120,7 +116,7 @@ class Posting : AppCompatActivity() {
             comment_id = newCommentId,  // Use the generated ID
             content = commentText,
             user_id = CurrentUser.getUserUid,
-            creationTime = java.util.Date(),
+            creationTime = Date(),
             postId = postId  // postId를 댓글에 추가합니다.
         )
         commentList.add(newComment)

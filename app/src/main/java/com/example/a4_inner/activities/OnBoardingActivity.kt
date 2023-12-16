@@ -1,8 +1,9 @@
-package com.example.a4_inner
+package com.example.a4_inner.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.a4_inner.PreferenceHelper
 import com.example.a4_inner.databinding.ActivityOnBoardingBinding
 
 class OnBoardingActivity : AppCompatActivity() {

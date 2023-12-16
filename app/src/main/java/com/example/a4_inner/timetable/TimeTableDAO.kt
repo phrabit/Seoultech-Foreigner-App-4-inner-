@@ -1,10 +1,11 @@
-package com.example.a4_inner
+package com.example.a4_inner.timetable
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.a4_inner.TimeTable
 
 @Dao
 interface TimeTableDAO {

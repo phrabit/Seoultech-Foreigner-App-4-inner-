@@ -1,31 +1,16 @@
 // 추후 간추리기 용!!!!
 
-package com.example.a4_inner
+package com.example.a4_inner.activities
 
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import com.bumptech.glide.Glide
 import com.example.a4_inner.databinding.ActivityMyPageBinding
-import com.example.a4_inner.databinding.ActivityNaviBinding
-import com.example.a4_inner.databinding.FragmentHomeBinding
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import android.view.View
 import androidx.activity.result.ActivityResultLauncher
-
 
 
 class MyPageActivity2 : AppCompatActivity() {
