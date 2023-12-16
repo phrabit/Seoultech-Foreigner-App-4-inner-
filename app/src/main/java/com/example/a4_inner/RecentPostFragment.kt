@@ -49,7 +49,7 @@ class RecentPostFragment : Fragment() {
             ui.setOnClickListener {
 //                val bulletin_fragment = requireActivity().supportFragmentManager.findFragmentByTag(
 //                    TAG_BULLETIN)
-                (requireActivity() as? NaviActivity)?.setFragment(TAG_BULLETIN, R.id.bulletinFragment, BulletinFragment())
+                (requireActivity() as? NaviActivity)?.setFragment(TAG_BULLETIN, BulletinFragment())
             }
         }
     }
