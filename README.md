@@ -109,3 +109,12 @@
 -----------------------
 ## UI (User Interface)
 
+-----------------------
+## Dependencies
+> minumum android sdk version: 30
+> android room:2.4.0
+> glide:4.12.0
+> firebase auth:22.2.0
+> firebase firestore:20.3.0
+> gms location:21.0.1
+> kakaomap:2.6.0
