@@ -52,7 +52,7 @@ class Posting : AppCompatActivity() {
         val title = intent.getStringExtra("Title")
         val contents = intent.getStringExtra("Contents")
         val postId = intent.getStringExtra("PostId")  // 문서 ID를 받아옵니다.
-
+        watchComments()
         // 받아온 데이터를 TextView에 설정
         binding.itemTitle.text = title
 
@@ -80,8 +80,6 @@ class Posting : AppCompatActivity() {
             Log.d("ITM", "Button clicked - After addComment()")
         }
 
-        watchComments()
-
         /////////////////////////////////////////////////////////////////
 
         // Spinner 초기화
@@ -106,11 +104,6 @@ class Posting : AppCompatActivity() {
 
     private fun addComment() {
         val commentText = binding.comments.text.toString().trim()
-
-        if (TextUtils.isEmpty(commentText)) {
-            Toast.makeText(this, "Please insert the comments.", Toast.LENGTH_SHORT).show()
-            return
-        }
 
         val postId = intent.getStringExtra("PostId")
         if (postId == null) {
@@ -142,6 +135,8 @@ class Posting : AppCompatActivity() {
                 postId?.let {
                     FireBase.db.collection("Board").document(it)
                         .update("comments", FieldValue.arrayUnion(newCommentId))
+                }?.addOnCompleteListener{
+                    watchComments()
                 }
 
                 // RecyclerView 갱신
@@ -165,29 +160,25 @@ class Posting : AppCompatActivity() {
             FireBase.db.collection("Comment")
                 .whereEqualTo("postId", postId)
                 .orderBy("creationTime")
-                .addSnapshotListener { snapshot, error ->
-                    if (error != null) {
-                        Log.e("ITM", "댓글 업데이트 실패: $error")
-                        return@addSnapshotListener
-                    }
-
-                    if (snapshot != null) {
-                        commentList.clear()
-                        for (doc in snapshot.documents) {
-                            val comment = doc.toObject(Comment::class.java)
-                            if (comment != null) {
-                                commentList.add(comment)
-                            }
+                .get()
+                .addOnSuccessListener { documents ->
+                    commentList.clear()
+                    for (doc in documents) {
+                        val comment = doc.toObject(Comment::class.java)
+                        if (comment != null) {
+                            commentList.add(comment)
                         }
-                        commentAdapter.notifyDataSetChanged()
                     }
+                    commentAdapter.notifyDataSetChanged()
                 }
-
-        }
-        else {
+                .addOnFailureListener { exception ->
+                    Log.e("ITM", "댓글 불러오기 실패: $exception")
+                }
+        } else {
             Log.e("ITM", "No PostId passed in intent")
         }
     }
+
 
 
     private fun showOptionsDialog(adapter: ArrayAdapter<String>, docId: String) {
