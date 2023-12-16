@@ -17,6 +17,10 @@ import com.example.a4_inner.databinding.FragmentTimetableBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import org.checkerframework.checker.units.qual.Current
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 private const val ARG_PARAM1 = "param1"
@@ -40,6 +44,9 @@ class TimetableFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+
+        loadTimetableDataForToday()
     }
 
     override fun onCreateView(
@@ -52,6 +59,7 @@ class TimetableFragment : Fragment() {
             // 입력할 수 있는 팝업창이 나오도록 하기
             showAddClassDialog()
         }
+
         return binding.root
     }
 
@@ -75,6 +83,13 @@ class TimetableFragment : Fragment() {
                     Log.d("ITM","hello?")
 
                     val timetableInfo = document.data as Map<String, Any>
+
+                    // RoomDB 작업
+                    val timetableDao = TimeTableDB.getInstance(requireContext()).timetableDAO()
+
+                    // 데이터를 불러올 때마다 기존 데이터를 삭제합니다.
+                    timetableDao.deleteAll()
+
                     for ((day, info) in timetableInfo) {
                         val dayInfo = info as Map<String, Any>
                         for ((_, classInfo) in dayInfo) {
@@ -85,11 +100,23 @@ class TimetableFragment : Fragment() {
                                 val selectedClassRoom = classInfo[2]
                                 val classroom = classInfo[3]
 
+
                                 // Apply the loaded data to your app
                                 applyBackgroundColor(day, period.split(" ")[0].toInt(), period.split(" ")[1].toInt(), className, selectedClassRoom, classroom)
+
+                                // 데이터를 Room에 저장
+                                timetableDao.insert(TimeTable(0, day, period, className, selectedClassRoom, classroom))
+
                             }
                         }
                     }
+
+                    // 삽입 후 모든 데이터 가져오기
+                    val allData = timetableDao.getAll()
+                    allData.forEach { data ->
+                        Log.d("RoomDB", data.toString())
+                    }
+
                 } else {
                     Log.d("ITM", "No such document")
                 }
@@ -98,6 +125,157 @@ class TimetableFragment : Fragment() {
                 Log.d("ITM", "get failed with ", exception)
             }
     }
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 남섭이형을 위한 코드
+    // getCurrentDate(), getDayOfWeek(currentDate)로 오늘 날짜와 요일을 구함
+    // loadTimetableForToday()로 오늘 요일의 해당하는 시간표 정보를 가져옴.
+
+    object todayTimeTable {
+        private var todayTimetable: List<TimetableItem>? = null
+
+        fun setTodayTimetable(timetable: List<TimetableItem>) {
+            todayTimetable = timetable
+        }
+
+        fun getTodayTimetable(): List<TimetableItem>? {
+            return todayTimetable
+        }
+    }
+
+    data class TimetableItem(
+        val day: String,
+        val startPeriod: Int,
+        val endPeriod: Int,
+        val className: String,
+        val selectedClassRoom: String,
+        val classroom: String
+    )
+
+    fun loadTimetableDataForToday() {
+        val currentDate = getCurrentDate()
+        val currentDay = getDayOfWeek(currentDate)
+
+        // 특정 요일의 시간표 정보를 가져옵니다.
+        loadTimetableDataForDay(currentDay){
+            Log.d("ITM","Callback is called.")
+
+            val todayTimetable = todayTimeTable.getTodayTimetable()
+            Log.d("ITM", "Today's Timetable: $todayTimetable")
+
+            // 추가된 Log 문
+            Log.d("ITM", "Today's Timetable Size: ${todayTimetable?.size}")
+
+            // 오늘의 시간표를 출력합니다.
+            Log.d("ITM", "Today's Timetable: $todayTimetable")
+            Log.d("ITM", "Today's Timetable Size: ${todayTimetable?.size}")
+
+            if (todayTimetable == null) {
+                Log.d("ITM", "Today's Timetable is null")
+            } else {
+                // 여기에서 오늘의 시간표 데이터를 사용할 수 있습니다.
+                // 예를 들어, 시간표의 첫 번째 항목의 이름을 출력하거나 할 수 있습니다.
+                Log.d("ITM", "First class of today: ${todayTimetable[0].className}")
+            }
+        }
+    }
+
+    fun loadTimetableDataForDay(day: String, callback: () -> Unit) {
+        val userId = CurrentUser.getUserUid
+        val timetableRef = FirebaseFirestore.getInstance()
+            .collection("Timetable")
+            .document(userId.toString())
+
+        timetableRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data != null) {
+                    val timetableInfo = document.data as Map<String, Any>
+                    val dayInfo = timetableInfo[day] as? Map<String, Any>
+
+                    if (dayInfo != null) {
+                        val todayTimetable = mutableListOf<TimetableItem>()
+
+                        for ((_, classInfo) in dayInfo) {
+                            val classInfoDetails = classInfo as Map<String, List<String>>
+                            for ((_, classInfo) in classInfoDetails) {
+                                val period = classInfo[0]
+                                val className = classInfo[1]
+                                val selectedClassRoom = classInfo[2]
+                                val classroom = classInfo[3]
+
+                                // TimetableItem을 생성하고 목록에 추가합니다.
+                                val timetableItem = TimetableItem(
+                                    day = day,
+                                    startPeriod = period.split(" ")[0].toInt(),
+                                    endPeriod = period.split(" ")[1].toInt(),
+                                    className = className,
+                                    selectedClassRoom = selectedClassRoom,
+                                    classroom = classroom
+                                )
+                                todayTimetable.add(timetableItem)
+                            }
+                        }
+
+                        // 싱글톤 객체에 오늘의 시간표를 설정합니다.
+                        todayTimeTable.setTodayTimetable(todayTimetable)
+                        Log.d("ITM","오늘의 시간표 : $todayTimetable")
+
+                        callback.invoke()
+
+                        // 필요하다면 여기에서 앱에 데이터를 적용할 수도 있습니다.
+                    } else {
+                        Log.d("ITM", "해당 날짜의 시간표 데이터가 없습니다: $day")
+                    }
+                } else {
+                    Log.d("ITM", "해당 문서가 없습니다")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("ITM", "데이터 가져오기 실패: ", exception)
+            }
+    }
+
+    private fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return sdf.format(Date())
+    }
+
+    private fun getDayOfWeek(date: String): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val parsedDate = sdf.parse(date)
+        val cal = Calendar.getInstance()
+        cal.time = parsedDate ?: Date()
+        val dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)
+
+        // Calendar.DAY_OF_WEEK의 값은 일요일(1)부터 토요일(7)까지입니다.
+        // Firestore의 문서에 따라 월요일부터 일요일까지의 순서에 맞게 조정합니다.
+        val firestoreDayOfWeek = when (dayOfWeek) {
+            Calendar.SUNDAY -> 7
+            else -> dayOfWeek - 1
+        }
+
+        return when (firestoreDayOfWeek) {
+            1 -> "monday"
+            2 -> "tuesday"
+            3 -> "wednesday"
+            4 -> "thursday"
+            5 -> "friday"
+            6 -> "saturday"
+            7 -> "sunday"
+            else -> throw IllegalArgumentException("Invalid day of week")
+        }
+    }
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
     private fun showAddClassDialog() {
@@ -128,11 +306,11 @@ class TimetableFragment : Fragment() {
 
         // Spinner에 강의실 목록 추가 (이 부분은 프로젝트에 맞게 수정해야 함)
         val classRoomList = arrayOf("Building", "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall", "(4) Business Incubation Center 2", "(5) Hyeseong Hall", "(6) Cheongun Hall",
-            "(7) Seoul Technopark", "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond", "(12) Eoui Stream", "(13) Main Gate", "(14) Ceramics Hall", "(30) SeoulTech Daycare Center",
-            "(31) Business Incubation Center", "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library", "(35) Central Library Annex", "(36) Suyeon Hall", "(37) Student Union Bldg", "(38) Language Center",
-            "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory", "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate", "(45) Surim Dormitory", "(46) Nuri Dormitory", "(47) SeoulTech Academy House",
-            "(51) The 100th Memorial Hall", "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall", "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall", "(58) Power Plant 2", "(59) R.O.T.C", "(60) Mirae Hall",
-            "(61) Changeui Gate", "(62) Techno Cube", "(63) Main Playground", "(64) South Gate")
+            "(7) Seoul Technopark", "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond", "(13) Main Gate", "(30) SeoulTech Daycare Center",
+            "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library", "(35) Central Library Annex", "(37) Student Union Bldg", "(38) Language Center",
+            "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory", "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate", "(45) Surim Dormitory", "(46) Nuri Dormitory",
+            "(51) The 100th Memorial Hall", "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall", "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall", "(58) Power Plant 2", "(60) Mirae Hall",
+            "(61) Changeui Gate", "(62) Techno Cube", "(63) Main Playground")
 
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, classRoomList)
         spinnerClassRoom.adapter = adapter
@@ -198,7 +376,7 @@ class TimetableFragment : Fragment() {
                         textFlag = true
                     }
 
-                    cellView.setBackgroundColor(Color.RED) // 여기에서는 노란색으로 설정했습니다. 필요에 따라 수정하세요.
+                    cellView.setBackgroundColor(Color.RED)
                     cellView.setTextColor(Color.WHITE)
 
                 }

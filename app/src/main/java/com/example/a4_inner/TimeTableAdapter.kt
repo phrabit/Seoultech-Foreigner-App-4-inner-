@@ -1,6 +1,8 @@
 package com.example.a4_inner
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4_inner.databinding.FragmentTimetableBinding
 
@@ -24,6 +26,20 @@ class TimeTableAdapter(val timetable_list:MutableList<TimeTable>):RecyclerView.A
             //여기서 사용
             //Time table ui component 불러서 사용
 
+            // period 파싱
+            val periods = time_table.period.split(" ").map { it.toInt() }
+
+            // 해당 시간대에 대한 TextView 찾기
+            for (i in periods[0]..periods[1]) {
+                val textViewId = binding.root.resources.getIdentifier("${time_table.day}$i", "id", binding.root.context.packageName)
+                val textView = binding.root.findViewById<TextView>(textViewId)
+
+                // TextView에 수업 정보 설정
+                textView.text = "${time_table.className}\n${time_table.selectedClassRoom}\n${time_table.classroom}"
+
+                textView.setBackgroundColor(Color.RED)
+                textView.setTextColor(Color.WHITE)
+            }
         }
     }
 }
