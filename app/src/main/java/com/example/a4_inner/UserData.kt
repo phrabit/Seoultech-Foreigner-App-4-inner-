@@ -37,6 +37,14 @@ object CurrentUser {
         get() = _email
     val getPhotoUrl: Uri?
         get() = _photoUrl
+    val department: String
+        get() = _department ?: "NOT SET YET"
+    val stuNum: String
+        get() = _stuNum ?: "NOT SET YET"
+    val grade: String
+        get() = _grade ?: "NOT SET YET"
+    val nation: String
+        get() = _nation ?: "NOT SET YET"
 
     private lateinit var userRef: DocumentReference
 
@@ -82,7 +90,7 @@ object CurrentUser {
             null
         }
         _department = snapshot.getString("department")
-        _stuNum = snapshot.getString("stuNum")
+        _stuNum = snapshot.getString("stuNumber")
         _grade = snapshot.getString("grade")
         _nation = snapshot.getString("nation")
     }
@@ -103,12 +111,3 @@ object CurrentUser {
         userRef = FirestoreProvider.db.collection("users").document()
     }
 }
-
-// Firebase 데이터 입력용 data class. 입력 이외에 사용하지 X.
-data class UserData(
-    val userUid: String?,
-    val name: String?, // Firebase.auth.currentUser.displayName
-    val creationDate: Timestamp?, // Firebase.auth.currentUser.metadata.creationTime
-    val email: String?,
-    val photoUrl: Uri?
-)

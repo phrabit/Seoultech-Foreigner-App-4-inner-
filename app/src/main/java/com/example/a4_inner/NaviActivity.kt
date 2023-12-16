@@ -92,7 +92,7 @@ class NaviActivity : AppCompatActivity() {
                     .addOnSuccessListener { document ->
                         if (document != null) {
                             val department = document.getString("department")
-                            val stuNum = document.getString("stuNum")
+                            val stuNum = document.getString("stuNumber")
                             val grade = document.getString("grade")
                             val nation = document.getString("nation")
 
@@ -100,11 +100,11 @@ class NaviActivity : AppCompatActivity() {
                                 showDialog()
                             }
                         } else {
-                            Log.d("NaviActivity", "No such document")
+                            Log.d("ITM", "No such document")
                         }
                     }
                     .addOnFailureListener { exception ->
-                        Log.d("NaviActivity", "get failed with ", exception)
+                        Log.d("ITM", "get failed with ", exception)
                     }
             } else {
                 // If user tries to access Navi Activity with no auth, directly navigate to LogInActivity
