@@ -40,18 +40,13 @@ class TimetableFragment : Fragment() {
     lateinit var binding: FragmentTimetableBinding
     val timeTableDB:TimeTableDB by lazy {TimeTableDB.getInstance(this.requireContext())}
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-//        loadTimetableData()
-//
-//        loadTimetableDataForToday()
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        loadTimetableDataForToday(null)
     }
 
     override fun onCreateView(
@@ -70,8 +65,62 @@ class TimetableFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        loadTimetableData()
     }
+    fun loadTimetableData() {
+        val userId = CurrentUser.getUserUid
+        val timetableRef = FirebaseFirestore.getInstance()
+            .collection("Timetable")
+            .document(userId.toString())
 
+        timetableRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data!=null) {
+                    Log.d("ITM", "DocumentSnapshot data: ${document.data}")
+                    Log.d("ITM","hello?")
+
+                    val timetableInfo = document.data as Map<String, Any>
+
+                    // RoomDB 작업
+                    val timetableDao = TimeTableDB.getInstance(requireContext()).timetableDAO()
+
+                    // 데이터를 불러올 때마다 기존 데이터를 삭제합니다.
+                    timetableDao.deleteAll()
+
+                    for ((day, info) in timetableInfo) {
+                        val dayInfo = info as Map<String, Any>
+                        for ((_, classInfo) in dayInfo) {
+                            val classInfoDetails = classInfo as Map<String, List<String>>
+                            for ((_, classInfo) in classInfoDetails) {
+                                val period = classInfo[0]
+                                val className = classInfo[1]
+                                val selectedClassRoom = classInfo[2]
+                                val classroom = classInfo[3]
+
+                                // Apply the loaded data to your app
+                                applyBackgroundColor(day, period.split(" ")[0].toInt(), period.split(" ")[1].toInt(), className, selectedClassRoom, classroom)
+
+                                // 데이터를 Room에 저장
+                                timetableDao.insert(TimeTable(0, day, period, className, selectedClassRoom, classroom))
+
+                            }
+                        }
+                    }
+
+                    // 삽입 후 모든 데이터 가져오기
+                    val allData = timetableDao.getAll()
+                    allData.forEach { data ->
+                        Log.d("RoomDB", data.toString())
+                    }
+
+                } else {
+                    Log.d("ITM", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("ITM", "get failed with ", exception)
+            }
+    }
     private fun showAddClassDialog() {
         val builder = AlertDialog.Builder(requireContext())
         val inflater = layoutInflater
