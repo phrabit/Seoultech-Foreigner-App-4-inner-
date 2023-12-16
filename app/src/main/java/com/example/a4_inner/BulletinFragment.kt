@@ -8,27 +8,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4_inner.databinding.FragmentBulletinBinding
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.awaitAll
-import java.security.Timestamp
-import java.util.Date
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
+private const val TAG_HOME = "home_fragment"
 /**
  * A simple [Fragment] subclass.
  * Use the [BulletinFragment.newInstance] factory method to
@@ -41,7 +31,6 @@ class BulletinFragment : Fragment() {
     private lateinit var binding: FragmentBulletinBinding
     private lateinit var adapter: RecyclerUserAdapter
     private var list = ArrayList<Board>()
-    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +47,11 @@ class BulletinFragment : Fragment() {
     ): View? {
         binding = FragmentBulletinBinding.inflate(inflater, container, false)
 
-        // Firestore 초기화
-        firestore = FirebaseFirestore.getInstance()
-
         // Firestore에서 데이터 가져와 RecyclerView 업데이트
         fetchDataFromFirestore()
+
+//        // 남섭이형을 위해 최근게시물 3개 불러오는 함수 호출.
+//        fetchRecentBulletinData()
 
         return binding.root
     }
@@ -122,7 +111,7 @@ class BulletinFragment : Fragment() {
     // Firestore에서 데이터를 실시간으로 가져오는 함수
     fun fetchDataFromFirestore() {
         MainScope().launch {
-            firestore.collection("Board")
+            FireBase.db.collection("Board")
                 .orderBy("creationTime", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshot, exception ->
                     if (exception != null) {
@@ -151,18 +140,18 @@ class BulletinFragment : Fragment() {
                                 )
                             }
                         }
-
+                        val home_fragment = (requireActivity() as? NaviActivity)?.supportFragmentManager?.findFragmentByTag(TAG_HOME) as? HomeFragment
                         // RecyclerView 데이터 업데이트
                         list.clear()
                         list.addAll(newDataList)
                         adapter.notifyDataSetChanged()
+                        fetchRecentBulletinData(home_fragment)
                     } else {
                         Log.d("ITM", "Current data: null")
                     }
                 }
         }
     }
-
 
 
     fun addNewItem(item: Board) {

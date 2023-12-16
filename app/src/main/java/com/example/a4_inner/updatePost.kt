@@ -12,7 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 class updatePost : AppCompatActivity() {
 
     lateinit var binding: ActivityUpdatePostBinding
-    private lateinit var firestore: FirebaseFirestore
     private var documentId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +27,6 @@ class updatePost : AppCompatActivity() {
         // 받아온 데이터를 EditText에 설정
         binding.titleInsert.setText(title)
         binding.contentsInsert.setText(contents)
-
-        // Firestore 초기화
-        firestore = FirebaseFirestore.getInstance()
 
         // Complete 버튼 클릭 이벤트 처리
         binding.completeBtn.setOnClickListener {
@@ -61,7 +57,7 @@ class updatePost : AppCompatActivity() {
     private fun updateFirestoreData(newTitle: String, newContents: String) {
         documentId?.let { docId ->
             Log.d("ITM", "Updating Firestore document. DocumentId: $docId, NewTitle: $newTitle, NewContents: $newContents")
-            val documentReference = firestore.collection("Board").document(docId)
+            val documentReference = FireBase.db.collection("Board").document(docId)
 
             // 업데이트할 데이터 생성
             val updatedData = hashMapOf(

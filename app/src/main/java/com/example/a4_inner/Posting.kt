@@ -29,7 +29,6 @@ class Posting : AppCompatActivity() {
     private val commentList: ArrayList<Comment> = ArrayList()
 
     private lateinit var commentListener: ListenerRegistration
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private var postId: String? = null
 
@@ -53,7 +52,7 @@ class Posting : AppCompatActivity() {
         val title = intent.getStringExtra("Title")
         val contents = intent.getStringExtra("Contents")
         val postId = intent.getStringExtra("PostId")  // 문서 ID를 받아옵니다.
-
+        watchComments()
         // 받아온 데이터를 TextView에 설정
         binding.itemTitle.text = title
 
@@ -81,8 +80,6 @@ class Posting : AppCompatActivity() {
             Log.d("ITM", "Button clicked - After addComment()")
         }
 
-        watchComments()
-
         /////////////////////////////////////////////////////////////////
 
         // Spinner 초기화
@@ -108,11 +105,6 @@ class Posting : AppCompatActivity() {
     private fun addComment() {
         val commentText = binding.comments.text.toString().trim()
 
-        if (TextUtils.isEmpty(commentText)) {
-            Toast.makeText(this, "Please insert the comments.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         val postId = intent.getStringExtra("PostId")
         if (postId == null) {
             Log.e("ITM", "No PostId passed in intent")
@@ -120,11 +112,7 @@ class Posting : AppCompatActivity() {
         }
 
         // 댓글 ID 생성
-        val newCommentId = firestore.collection("Comment").document().id
-
-        // 이미지 리소스 가져오기
-//        val drawableId: Int = R.drawable.user
-//        val imageDrawable: Drawable? = ContextCompat.getDrawable(this, drawableId)
+        val newCommentId = FireBase.db.collection("Comment").document().id
 
         // 댓글 목록에 추가
         val newComment = Comment(
@@ -138,15 +126,17 @@ class Posting : AppCompatActivity() {
         commentList.add(newComment)
 
         // Firebase Firestore에 댓글 추가
-        firestore.collection("Comment").document(newCommentId)
+        FireBase.db.collection("Comment").document(newCommentId)
             .set(newComment)
             .addOnSuccessListener {
                 Log.d("ITM", "댓글 추가 성공, document ID: $newCommentId")
 
                 // 게시글의 comments 필드 업데이트
                 postId?.let {
-                    firestore.collection("Board").document(it)
+                    FireBase.db.collection("Board").document(it)
                         .update("comments", FieldValue.arrayUnion(newCommentId))
+                }?.addOnCompleteListener{
+                    watchComments()
                 }
 
                 // RecyclerView 갱신
@@ -167,32 +157,28 @@ class Posting : AppCompatActivity() {
     private fun watchComments() {
         val postId = intent.getStringExtra("PostId")
         if (postId != null) {
-            firestore.collection("Comment")
+            FireBase.db.collection("Comment")
                 .whereEqualTo("postId", postId)
                 .orderBy("creationTime")
-                .addSnapshotListener { snapshot, error ->
-                    if (error != null) {
-                        Log.e("ITM", "댓글 업데이트 실패: $error")
-                        return@addSnapshotListener
-                    }
-
-                    if (snapshot != null) {
-                        commentList.clear()
-                        for (doc in snapshot.documents) {
-                            val comment = doc.toObject(Comment::class.java)
-                            if (comment != null) {
-                                commentList.add(comment)
-                            }
+                .get()
+                .addOnSuccessListener { documents ->
+                    commentList.clear()
+                    for (doc in documents) {
+                        val comment = doc.toObject(Comment::class.java)
+                        if (comment != null) {
+                            commentList.add(comment)
                         }
-                        commentAdapter.notifyDataSetChanged()
                     }
+                    commentAdapter.notifyDataSetChanged()
                 }
-
-        }
-        else {
+                .addOnFailureListener { exception ->
+                    Log.e("ITM", "댓글 불러오기 실패: $exception")
+                }
+        } else {
             Log.e("ITM", "No PostId passed in intent")
         }
     }
+
 
 
     private fun showOptionsDialog(adapter: ArrayAdapter<String>, docId: String) {
@@ -257,7 +243,7 @@ class Posting : AppCompatActivity() {
     private fun deletePost() {
         val postId = intent.getStringExtra("PostId")  // Intent에서 PostId를 받아옵니다.
         if (postId != null) {
-            firestore.collection("Board").document(postId)
+            FireBase.db.collection("Board").document(postId)
                 .delete()
                 .addOnSuccessListener {
                     Log.d("ITM", "Post successfully deleted!")

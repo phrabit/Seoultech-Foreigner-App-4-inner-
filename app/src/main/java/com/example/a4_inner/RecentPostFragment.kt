@@ -36,10 +36,17 @@ class RecentPostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRecentPostBinding.inflate(inflater, container, false)
-
+        fetchRecentBulletinData(requireParentFragment() as? HomeFragment)
         return binding.root
     }
 
+    public fun refresh(){
+        val recent_post_txt_list = listOf(binding.recentPost1Txt, binding.recentPostTxt2, binding.recentPostTxt3)
+        val recent_posts = RecentBulletinData.getRecentBulletinList()
+        for((post, ui) in recent_posts!!.zip(recent_post_txt_list)){
+            ui.text = post.title
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

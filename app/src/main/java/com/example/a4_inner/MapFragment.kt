@@ -1,6 +1,6 @@
 package com.example.a4_inner
 
-import android.R
+//import android.R
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -18,19 +18,22 @@ import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
+import com.kakao.vectormap.label.LabelLayer
+import com.kakao.vectormap.label.LabelManager
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.route.RouteLineLayer
+import com.kakao.vectormap.route.RouteLineManager
 import com.kakao.vectormap.route.RouteLineOptions
 import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.route.RouteLineStyles
 import com.kakao.vectormap.route.RouteLineStylesSet
-import java.util.Arrays
-
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TARGET = "param1"
 
 /**
  * A simple [Fragment] subclass.
@@ -40,18 +43,18 @@ private const val ARG_PARAM2 = "param2"
 class MapFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
-    private var param2: String? = null
     lateinit var binding: FragmentMapBinding
-    lateinit var layer: RouteLineLayer
-    private var buildingSelected: String = ""
-
+    lateinit var line_manager: RouteLineManager
+    lateinit var line_layer: RouteLineLayer
+    lateinit var label_manager: LabelManager
+    lateinit var label_layer: LabelLayer
+    lateinit var marker_style: LabelStyles
+    private var building_selected: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            param1 = it.getString(TARGET)
         }
-
     }
 
     override fun onCreateView(
@@ -61,7 +64,6 @@ class MapFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentMapBinding.inflate(inflater, container, false)
         val mapView: MapView = binding.mapView
-
         binding.pathFindBtn.setOnClickListener{
             showDialog()
         }
@@ -80,15 +82,26 @@ class MapFragment : Fragment() {
             override fun onMapReady(kakaoMap: KakaoMap) {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("map", "successfully!")
-                layer = kakaoMap.getRouteLineManager()!!.getLayer()
+                line_manager = kakaoMap.routeLineManager!!
+                line_layer = line_manager.getLayer()
+                label_manager = kakaoMap.labelManager!!
+                label_layer = label_manager.getLayer()!!
+                marker_style = LabelStyles.from(LabelStyle.from(R.drawable.map_marker).setApplyDpScale(false))
+
+//                for(node in UniversitySites.nodes){
+//                    label_layer.addLabel(LabelOptions.from(node.location).setStyles(marker_style))
+//                }
+                if(param1 != null){
+                    performActionBasedOnSelection(param1.toString())
+                }
             }
 
             override fun getPosition(): LatLng {
-                return LatLng.from(37.631122, 127.077547);
+                return LatLng.from(37.631122, 127.077547)
             }
 
             override fun getZoomLevel(): Int {
-                return 18
+                return 17
             }
 
 
@@ -96,17 +109,25 @@ class MapFragment : Fragment() {
         return binding.root
     }
     private fun showDialog() {
-        val items = arrayOf("Building", "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall", "(4) Business Incubation Center 2", "(5) Hyeseong Hall", "(6) Cheongun Hall",
-            "(7) Seoul Technopark", "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond", "(12) Eoui Stream", "(13) Main Gate", "(14) Ceramics Hall", "(30) SeoulTech Daycare Center",
-            "(31) Business Incubation Center", "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library", "(35) Central Library Annex", "(36) Suyeon Hall", "(37) Student Union Bldg", "(38) Language Center",
-            "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory", "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate", "(45) Surim Dormitory", "(46) Nuri Dormitory", "(47) SeoulTech Academy House",
-            "(51) The 100th Memorial Hall", "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall", "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall", "(58) Power Plant 2", "(59) R.O.T.C", "(60) Mirae Hall",
-            "(61) Changeui Gate", "(62) Techno Cube", "(63) Main Playground", "(64) South Gate")
+        val items = arrayOf("Building",
+            "(1) Administration Bldg", "(2) Dasan Hall", "(3) Changhak Hall",
+            "(5) Hyeseong Hall", "(6) Cheongun Hall", "(7) Seoul Technopark",
+            "(8) Graduate Schools", "(10) Power Plant", "(11) Bungeobang Pond",
+            "(13) Main Gate", "(30) SeoulTech Daycare Center", "(31) Business Incubation Center",
+            "(32) Frontier Hall", "(33) Hi-Tech Hall", "(34) Central Library",
+            "(35) Central Library Annex", "(36) Suyeon Hall", "(37) Student Union Bldg",
+            "(38) Language Center", "(39) Davinci Hall", "(40) Eoui Hall", "(41) Buram Dormitory",
+            "(42) KB Dormitory", "(43) Seongrim Dormitory", "(44) Hyeopdong Gate",
+            "(45) Surim Dormitory", "(46) Nuri Dormitory", "(51) The 100th Memorial Hall",
+            "(52) Student Union Bldg. 2", "(53) Sangsang Hall", "(54) Areum Hall",
+            "(55) University Gymnasium", "(56) Daeryuk Hall", "(57) Mugung Hall",
+            "(58) Power Plant 2", "(60) Mirae Hall", "(61) Changeui Gate",
+            "(62) Techno Cube", "(63) Main Playground")
         val builder = AlertDialog.Builder(this.requireContext())
         val dialogBinding = SelectBuildingBinding.inflate(layoutInflater)
         val spinner = dialogBinding.spinner
 
-        val adapter = ArrayAdapter<String>(this.requireContext(), R.layout.select_dialog_item, items)
+        val adapter = ArrayAdapter<String>(this.requireContext(), androidx.appcompat.R.layout.select_dialog_item_material, items)
         spinner.adapter = adapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -115,22 +136,47 @@ class MapFragment : Fragment() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                buildingSelected = items[position]
+                building_selected = items[position]
             }
         }
         builder.setView(dialogBinding.root)
         builder.setPositiveButton("OK") { _, _ ->
-            performActionBasedOnSelection(buildingSelected)
-            PreferenceHelper.setRecentDestinations(this.requireContext(), buildingSelected)
+            performActionBasedOnSelection(building_selected)
+            PreferenceHelper.setRecentDestinations(this.requireContext(), building_selected)
         }
         builder.setNegativeButton("Cancle"){ _, _ ->
 
         }
         builder.show()
     }
-    private fun performActionBasedOnSelection(itemSelected: String) {
+    public fun performActionBasedOnSelection(itemSelected: String) {
+//        val stylesSet: RouteLineStylesSet = RouteLineStylesSet.from(
+//            "blueStyles",
+//            RouteLineStyles.from(RouteLineStyle.from(30.toFloat(), Color.BLUE))
+//        )
+//        for(edge in UniversityEdges.edges){
+//            var latlngs:MutableList<LatLng> = mutableListOf()
+//            latlngs.add(edge.to.location)
+//            latlngs.add(edge.from.location)
+//            val segment = RouteLineSegment.from(
+//                latlngs
+//            )
+//                .setStyles(stylesSet.getStyles(0))
+//
+//            val options = RouteLineOptions.from(segment)
+//                .setStylesSet(stylesSet)
+//
+//            val routeLine = line_layer.addRouteLine(options)
+//        }
+
+        line_layer.removeAll()
         val crt_latlng = LatLng.from(37.630293, 127.076929)
-        val path = Dijkstra.dijkstra(crt_latlng, UniversitySites.node5)
+        var target: Node? = null
+        for(node in UniversitySites.nodes){
+            if(node.name == itemSelected) target = node
+        }
+        if(target == null) return
+        val path = Dijkstra.dijkstra(crt_latlng, target!!, UniversityEdges.edges)
         var latlngs:MutableList<LatLng> = mutableListOf(crt_latlng)
         for(node in path) {
             latlngs.add(node.location)
@@ -148,7 +194,7 @@ class MapFragment : Fragment() {
         val options = RouteLineOptions.from(segment)
             .setStylesSet(stylesSet)
 
-        val routeLine = layer.addRouteLine(options)
+        val routeLine = line_layer.addRouteLine(options)
     }
     companion object {
         /**
@@ -161,11 +207,10 @@ class MapFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(target: String) =
             MapFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(TARGET, target)
                 }
             }
     }
