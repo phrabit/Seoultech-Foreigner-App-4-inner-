@@ -150,29 +150,28 @@ class NaviActivity : AppCompatActivity() {
         if (tag == TAG_HOME) {
             if (home != null) {
                 fragTransaction.show(home)
-                navigationView.menu[0].setChecked(true)
-
             }
+            navigationView.menu[0].setChecked(true)
         } else if (tag == TAG_BULLETIN) {
             if (bulletin != null) {
                 fragTransaction.show(bulletin)
-                navigationView.menu[1].setChecked(true)
             }
+            navigationView.menu[1].setChecked(true)
         } else if (tag == TAG_TIMETABLE) {
             if (timetable != null) {
                 fragTransaction.show(timetable)
-                navigationView.menu[2].setChecked(true)
             }
+            navigationView.menu[2].setChecked(true)
         } else if (tag == TAG_MAP) {
             if (map != null) {
                 fragTransaction.show(map)
-                navigationView.menu[3].setChecked(true)
             }
+            navigationView.menu[3].setChecked(true)
         } else if (tag == TAG_AR) {
             if (ar != null) {
                 fragTransaction.show(ar)
-                navigationView.menu[4].setChecked(true)
             }
+            navigationView.menu[4].setChecked(true)
         }
         fragTransaction.commitAllowingStateLoss()
 
