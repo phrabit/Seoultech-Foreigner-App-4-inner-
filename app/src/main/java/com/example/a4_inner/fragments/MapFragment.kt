@@ -105,6 +105,7 @@ class MapFragment : Fragment() {
 //                for(node in UniversitySites.nodes){
 //                    label_layer.addLabel(LabelOptions.from(node.location).setStyles(marker_style))
 //                }
+
                 if(param1 != null){
                     fetchLocation(param1.toString())
                 }

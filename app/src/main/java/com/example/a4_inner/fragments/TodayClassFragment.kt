@@ -21,7 +21,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TodayClassFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TodayClassFragment : Fragment() {
+class TodayClassFragment: Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -32,6 +32,7 @@ class TodayClassFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        Log.d("doubledouble", "On Create: " + this.toString())
     }
 
     override fun onCreateView(
@@ -39,22 +40,19 @@ class TodayClassFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodayClassBinding.inflate(inflater, container, false)
-        getTodayClassData()
         binding.todayClass1Txt.visibility = View.INVISIBLE
         binding.todayClass2Txt.visibility = View.INVISIBLE
         binding.todayClass3Txt.visibility = View.INVISIBLE
         return binding.root
     }
 
-    public fun getTodayClassData(){
+    fun getTodayClassData(){
         loadTimetableDataForToday(this)
     }
-    public fun refresh(){
+    fun refresh(){
         val lecture_txt_list = arrayListOf(binding.todayClass1Txt, binding.todayClass2Txt, binding.todayClass3Txt)
         val today_class_list = todayTimeTable.getTodayTimetable()
-        if(today_class_list != null || today_class_list?.size == 0) {
-            binding.noClassTxt.visibility = View.INVISIBLE
-            Log.d("ITM", "today class exists")
+        if(today_class_list != null && today_class_list.isNotEmpty()) {
             for((lecture,ui) in today_class_list.zip(lecture_txt_list)){
                 ui.text = lecture.className
                 ui.visibility = View.VISIBLE
@@ -64,8 +62,6 @@ class TodayClassFragment : Fragment() {
             }
         }
         else{
-            Log.d("ITM", "today class not exists")
-            binding.noClassTxt.visibility = View.VISIBLE
             for(ui in lecture_txt_list){
                 ui.visibility = View.INVISIBLE
             }

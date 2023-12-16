@@ -48,12 +48,12 @@ data class TimetableItem(
     val classroom: String
 )
 
-fun loadTimetableDataForToday(home_fragment : TodayClassFragment?) {
+fun loadTimetableDataForToday(today_class_fragment : TodayClassFragment?) {
     val currentDate = getCurrentDate()
     val currentDay = getDayOfWeek(currentDate)
 
     // 특정 요일의 시간표 정보를 가져옵니다.
-    loadTimetableDataForDay(currentDay){
+    loadTimetableDataForDay(currentDay, today_class_fragment){
         Log.d("ITM","Callback is called.")
 
         val todayTimetable = todayTimeTable.getTodayTimetable()
@@ -74,19 +74,17 @@ fun loadTimetableDataForToday(home_fragment : TodayClassFragment?) {
             Log.d("ITM", "First class of today: ${todayTimetable[0].className}")
         }
 
-        if(home_fragment != null){
-            Log.d("ITM", "REFRESH!")
-            home_fragment.refresh()
+        if(today_class_fragment != null){
+            today_class_fragment.refresh()
         }
     }
 }
 
-fun loadTimetableDataForDay(day: String, callback: () -> Unit) {
+fun loadTimetableDataForDay(day: String, today_class_fragment : TodayClassFragment?,  callback: () -> Unit) {
     val userId = CurrentUser.getUserUid
     val timetableRef = FirebaseFirestore.getInstance()
         .collection("Timetable")
         .document(userId.toString())
-
     timetableRef.get()
         .addOnSuccessListener { document ->
             if (document != null && document.data != null) {
@@ -126,14 +124,15 @@ fun loadTimetableDataForDay(day: String, callback: () -> Unit) {
                     // 필요하다면 여기에서 앱에 데이터를 적용할 수도 있습니다.
                 } else {
                     Log.d("ITM", "해당 날짜의 시간표 데이터가 없습니다: $day")
+                    today_class_fragment?.refresh()
                 }
             } else {
                 Log.d("ITM", "해당 문서가 없습니다")
+                today_class_fragment?.refresh()
             }
         }
         .addOnFailureListener { exception ->
             Log.d("ITM", "데이터 가져오기 실패: ", exception)
-
         }
 }
 

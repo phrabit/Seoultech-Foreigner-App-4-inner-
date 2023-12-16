@@ -34,9 +34,6 @@
             android:name=".post.Posting"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.OnBoardingActivity"
             android:exported="true">
             <intent-filter>

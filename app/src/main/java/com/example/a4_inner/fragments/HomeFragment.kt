@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.a4_inner.CurrentUser
+import com.example.a4_inner.FragmentTags
 import com.example.a4_inner.R
 import com.example.a4_inner.databinding.FragmentHomeBinding
 
@@ -21,24 +22,39 @@ import com.example.a4_inner.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
-    // binding for fragment
-    private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
-    public fun test(){
-        Log.d("ITM", "here journey!")
-    }
+    lateinit var binding : FragmentHomeBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("DOUBLEDOUBLE", "qweqwe")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        var today_class_fragment : TodayClassFragment? = childFragmentManager.findFragmentById(R.id.todayClassFragment) as? TodayClassFragment
+        if(!(today_class_fragment is TodayClassFragment)){
+            today_class_fragment = TodayClassFragment()
+            childFragmentManager.beginTransaction()
+                .add(R.id.todayClassFragment, today_class_fragment, FragmentTags.TAG_TODAY_CLASS)
+                .commit()
+        }
+        var recent_dest_fragment : RecentDestinationFragment? = childFragmentManager.findFragmentById(R.id.recentDestinationFragment) as? RecentDestinationFragment
+        if(!(recent_dest_fragment is RecentDestinationFragment)){
+            recent_dest_fragment = RecentDestinationFragment()
+            childFragmentManager.beginTransaction()
+                .add(R.id.recentDestinationFragment, recent_dest_fragment, FragmentTags.TAG_RECENT_DEST)
+                .commit()
+        }
+        var recent_post_fragment : RecentPostFragment? = childFragmentManager.findFragmentById(R.id.recentPostFragment) as? RecentPostFragment
+        if(!(recent_post_fragment is RecentPostFragment )){
+            recent_post_fragment = RecentPostFragment()
+            childFragmentManager.beginTransaction()
+                .add(R.id.recentPostFragment, recent_post_fragment, FragmentTags.TAG_RECENT_POST)
+                .commit()
+        }
         return binding.root
     }
     @SuppressLint("SetTextI18n")
@@ -47,22 +63,18 @@ class HomeFragment : Fragment() {
         binding.studentNumberTxt.text = CurrentUser.stuNum
         binding.departmentTxt.text = CurrentUser.department
         binding.gradeTxt.text = CurrentUser.grade.split(";")[1]
-        Log.d("ITM", "refresh the home")
         val recent_dest_fragment = childFragmentManager.findFragmentById(R.id.recentDestinationFragment)
         if(recent_dest_fragment is RecentDestinationFragment){
-            Log.d("ITM", "refresh the recent dest")
             recent_dest_fragment.redraw()
         }
 
         val today_class_fragment = childFragmentManager.findFragmentById(R.id.todayClassFragment)
         if(today_class_fragment is TodayClassFragment){
-            Log.d("ITM", "refresh the today class")
             today_class_fragment.getTodayClassData()
         }
 
         val recent_post_fragment = childFragmentManager.findFragmentById(R.id.recentPostFragment)
         if(recent_post_fragment is RecentPostFragment){
-            Log.d("ITM", "refresh the today class")
             recent_post_fragment.refresh()
         }
     }
@@ -72,15 +84,6 @@ class HomeFragment : Fragment() {
         val photoUrl: Uri? = CurrentUser.getPhotoUrl
         // Reference to the ImageView
         val userPhotoImageView: ImageView = binding.userPhotoImageView
-        childFragmentManager.beginTransaction()
-            .add(R.id.todayClassFragment, TodayClassFragment(), "todayClassFragment")
-            .commit()
-        childFragmentManager.beginTransaction()
-            .add(R.id.recentPostFragment, RecentPostFragment(), "recentPostFragment")
-            .commit()
-        childFragmentManager.beginTransaction()
-            .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
-            .commit()
         Glide.with(this)
             .load(CurrentUser.getPhotoUrl)
             .placeholder(R.drawable.user) // Placeholder image while loading
@@ -100,6 +103,5 @@ class HomeFragment : Fragment() {
     // destroy view for Fragment
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }

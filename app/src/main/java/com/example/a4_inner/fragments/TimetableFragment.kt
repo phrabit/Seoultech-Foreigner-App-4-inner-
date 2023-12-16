@@ -82,9 +82,6 @@ class TimetableFragment : Fragment() {
             timetableRef.get()
                 .addOnSuccessListener { document ->
                     if (document != null && document.data != null) {
-                        Log.d("ITM", "DocumentSnapshot data: ${document.data}")
-                        Log.d("ITM", "hello?")
-
                         val timetableInfo = document.data as Map<String, Any>
 
                         // RoomDB 작업
@@ -151,7 +148,7 @@ class TimetableFragment : Fragment() {
         val editClassroom = dialogView.findViewById<EditText>(R.id.editClassroom)
 
         // Spinner에 요일 목록 추가
-        val dayOfWeekList = arrayOf("monday", "tuesday", "wednesday", "thursday", "friday")
+        val dayOfWeekList = arrayOf("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
         val dayOfWeekAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, dayOfWeekList)
         spinnerDayOfWeek.adapter = dayOfWeekAdapter
 

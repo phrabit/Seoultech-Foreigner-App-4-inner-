@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
@@ -34,7 +35,6 @@ class NaviActivity : AppCompatActivity() {
         binding = ActivityNaviBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setFragment(FragmentTags.TAG_HOME, HomeFragment())
-
         binding.cameraBtn.setOnClickListener{
             val packageName = "com.google.android.apps.translate"
             val intent = packageManager.getLaunchIntentForPackage(packageName)
@@ -98,7 +98,6 @@ class NaviActivity : AppCompatActivity() {
             } else {
                 val intent = Intent(this, LogInActivity::class.java)
 
-                Log.d("ITM","Fuck OFF")
                 Log.d("ITM", "fromLogin: ${intent.getStringExtra("fromLogin")}")
                 Log.d("ITM", "Firebase.auth.currentUser: ${Firebase.auth.currentUser}")
 
@@ -121,13 +120,11 @@ class NaviActivity : AppCompatActivity() {
         if (manager.findFragmentByTag(tag) == null) {
             fragTransaction.add(R.id.mainFrameLayout, fragment, tag)
         }
-
         val home = manager.findFragmentByTag(FragmentTags.TAG_HOME)
         val bulletin = manager.findFragmentByTag(FragmentTags.TAG_BULLETIN)
         val timetable = manager.findFragmentByTag(FragmentTags.TAG_TIMETABLE)
         val map = manager.findFragmentByTag(FragmentTags.TAG_MAP)
         val ar = manager.findFragmentByTag(FragmentTags.TAG_AR)
-
         val navigationView = findViewById<BottomNavigationView>(R.id.navigationView)
         if (home != null) {
             fragTransaction.hide(home)
@@ -148,7 +145,8 @@ class NaviActivity : AppCompatActivity() {
         if (ar != null) {
             fragTransaction.hide(ar)
         }
-
+        binding.myPageBtn.visibility = View.VISIBLE
+        binding.cameraBtn.visibility = View.VISIBLE
         if (tag == FragmentTags.TAG_HOME) {
             if (home != null) {
                 fragTransaction.show(home)
@@ -160,6 +158,8 @@ class NaviActivity : AppCompatActivity() {
             }
             navigationView.menu[1].setChecked(true)
         } else if (tag == FragmentTags.TAG_TIMETABLE) {
+            binding.myPageBtn.visibility = View.INVISIBLE
+            binding.cameraBtn.visibility = View.INVISIBLE
             if (timetable != null) {
                 fragTransaction.show(timetable)
             }
@@ -176,7 +176,6 @@ class NaviActivity : AppCompatActivity() {
             navigationView.menu[4].setChecked(true)
         }
         fragTransaction.commitAllowingStateLoss()
-
     }
 
     private fun showDialog() {
