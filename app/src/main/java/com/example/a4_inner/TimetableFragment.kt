@@ -73,54 +73,68 @@ class TimetableFragment : Fragment() {
             .collection("Timetable")
             .document(userId.toString())
 
-        timetableRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.data!=null) {
-                    Log.d("ITM", "DocumentSnapshot data: ${document.data}")
-                    Log.d("ITM","hello?")
+        FireBase.firebase_online = true
 
-                    val timetableInfo = document.data as Map<String, Any>
+        // 1. Firestore의 flag 변수 확인
+        if (FireBase.firebase_online!!) { // flag가 True인 경우
+            // Firestore에서 데이터를 불러옵니다.
+            timetableRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.data != null) {
+                        Log.d("ITM", "DocumentSnapshot data: ${document.data}")
+                        Log.d("ITM", "hello?")
 
-                    // RoomDB 작업
-                    val timetableDao = TimeTableDB.getInstance(requireContext()).timetableDAO()
+                        val timetableInfo = document.data as Map<String, Any>
 
-                    // 데이터를 불러올 때마다 기존 데이터를 삭제합니다.
-                    timetableDao.deleteAll()
+                        // RoomDB 작업
+                        val timetableDao = TimeTableDB.getInstance(requireContext()).timetableDAO()
 
-                    for ((day, info) in timetableInfo) {
-                        val dayInfo = info as Map<String, Any>
-                        for ((_, classInfo) in dayInfo) {
-                            val classInfoDetails = classInfo as Map<String, List<String>>
-                            for ((_, classInfo) in classInfoDetails) {
-                                val period = classInfo[0]
-                                val className = classInfo[1]
-                                val selectedClassRoom = classInfo[2]
-                                val classroom = classInfo[3]
+                        // 데이터를 불러올 때마다 기존 데이터를 삭제합니다.
+                        timetableDao.deleteAll()
 
-                                // Apply the loaded data to your app
-                                applyBackgroundColor(day, period.split(" ")[0].toInt(), period.split(" ")[1].toInt(), className, selectedClassRoom, classroom)
+                        for ((day, info) in timetableInfo) {
+                            val dayInfo = info as Map<String, Any>
+                            for ((_, classInfo) in dayInfo) {
+                                val classInfoDetails = classInfo as Map<String, List<String>>
+                                for ((_, classInfo) in classInfoDetails) {
+                                    val period = classInfo[0]
+                                    val className = classInfo[1]
+                                    val selectedClassRoom = classInfo[2]
+                                    val classroom = classInfo[3]
 
-                                // 데이터를 Room에 저장
-                                timetableDao.insert(TimeTable(0, day, period, className, selectedClassRoom, classroom))
+                                    // Apply the loaded data to your app
+                                    applyBackgroundColor(day, period.split(" ")[0].toInt(), period.split(" ")[1].toInt(), className, selectedClassRoom, classroom)
 
+                                    // 데이터를 Room에 저장
+                                    timetableDao.insert(TimeTable(0, day, period, className, selectedClassRoom, classroom))
+                                }
                             }
                         }
-                    }
 
-                    // 삽입 후 모든 데이터 가져오기
-                    val allData = timetableDao.getAll()
-                    allData.forEach { data ->
-                        Log.d("RoomDB", data.toString())
-                    }
+                        // 삽입 후 모든 데이터 가져오기
+                        val allData = timetableDao.getAll()
+                        allData.forEach { data ->
+                            Log.d("RoomDB", data.toString())
+                        }
 
-                } else {
-                    Log.d("ITM", "No such document")
+                    } else {
+                        Log.d("ITM", "No such document")
+                    }
                 }
+                .addOnFailureListener { exception ->
+                    Log.d("ITM", "get failed with ", exception)
+                }
+        } else { // flag가 False인 경우
+            // RoomDB에서 데이터를 불러옵니다.
+            val timetableDao = TimeTableDB.getInstance(requireContext()).timetableDAO()
+            val allData = timetableDao.getAll()
+
+            for (data in allData) {
+                applyBackgroundColor(data.day, data.period.split(" ")[0].toInt(), data.period.split(" ")[1].toInt(), data.className, data.selectedClassRoom, data.classroom)
             }
-            .addOnFailureListener { exception ->
-                Log.d("ITM", "get failed with ", exception)
-            }
+        }
     }
+
     private fun showAddClassDialog() {
         val builder = AlertDialog.Builder(requireContext())
         val inflater = layoutInflater
@@ -136,7 +150,7 @@ class TimetableFragment : Fragment() {
         val editClassroom = dialogView.findViewById<EditText>(R.id.editClassroom)
 
         // Spinner에 요일 목록 추가
-        val dayOfWeekList = arrayOf("Day","monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+        val dayOfWeekList = arrayOf("monday", "tuesday", "wednesday", "thursday", "friday")
         val dayOfWeekAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, dayOfWeekList)
         spinnerDayOfWeek.adapter = dayOfWeekAdapter
 
@@ -235,7 +249,7 @@ class TimetableFragment : Fragment() {
         }
     }
 
-    // 배경색을 원래 색상으로 되돌리wk는 함수
+    // 배경색을 원래 색상으로 되돌리는 함수
     private fun revertBackgroundColor(dayOfWeek: String, startPeriod: Int, endPeriod: Int, rootView: View?) {
         if (rootView != null) {
             for (p in startPeriod..endPeriod) {
@@ -245,12 +259,13 @@ class TimetableFragment : Fragment() {
                 if (cellView is TextView) {
                     // 여기에서는 원래 색상을 사용자가 원하는 색상으로 변경해야 합니다.
                     // 사용자가 지정한 배경색의 리소스 ID를 사용하여 배경색을 설정합니다.
-                    val originalColorResourceId = R.color.st_gray // 여기에 원래 색상의 리소스 ID를 넣어주세요
-                    val originalColor = ContextCompat.getColor(requireContext(), originalColorResourceId)
+                    val originalBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.cell_retrieve)
+                    cellView.background = originalBackgroundDrawable
 
-                    // 배경색과 텍스트 색상을 원래 색상으로 변경
-                    cellView.setBackgroundColor(originalColor)
                     cellView.setTextColor(Color.BLACK) // 텍스트 색상도 원래대로 변경해주세요
+
+                    // TextView의 텍스트 내용 삭제
+                    cellView.text = ""
                 }
             }
         }
