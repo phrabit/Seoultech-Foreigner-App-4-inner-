@@ -1,5 +1,6 @@
 package com.example.a4_inner
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -51,7 +52,12 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
+    @SuppressLint("SetTextI18n")
     fun refresh() {
+        binding.nameTxt.text = CurrentUser.getName + "(" + CurrentUser.nation + ")"
+        binding.studentNumberTxt.text = CurrentUser.stuNum
+        binding.departmentTxt.text = CurrentUser.department
+        binding.gradeTxt.text = CurrentUser.grade.split(";")[1]
         Log.d("ITM", "refresh the home")
         val recent_dest_fragment = childFragmentManager.findFragmentById(R.id.recentDestinationFragment)
         if(recent_dest_fragment is RecentDestinationFragment){
@@ -87,7 +93,7 @@ class HomeFragment : Fragment() {
             .add(R.id.recentDestinationFragment, RecentDestinationFragment(), "recentDestFragment")
             .commit()
         Glide.with(this)
-            .load(photoUrl)
+            .load(CurrentUser.getPhotoUrl)
             .placeholder(R.drawable.user) // Placeholder image while loading
             .error(R.drawable.user) // Error image if loading fails
             .circleCrop()
@@ -100,7 +106,6 @@ class HomeFragment : Fragment() {
         val userNameText: TextView = binding.nameTxt
 
         userNameText.text = CurrentUser.getName
-
     }
 
     // destroy view for Fragment
