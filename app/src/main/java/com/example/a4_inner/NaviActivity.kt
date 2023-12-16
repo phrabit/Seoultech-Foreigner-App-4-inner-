@@ -1,6 +1,7 @@
 package com.example.a4_inner
 
 import android.app.Activity
+import android.content.pm.PackageManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,14 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.a4_inner.databinding.ActivityNaviBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.firestore
+
 
 
 private const val TAG_HOME = "home_fragment"
@@ -47,13 +43,14 @@ class NaviActivity : AppCompatActivity() {
             val packageName = "com.google.android.apps.translate"
             val intent = packageManager.getLaunchIntentForPackage(packageName)
             if (intent != null) {
-                // 앱이 설치되어 있으면 앱 실행
                 startActivity(intent)
             } else {
-                // 앱이 설치되어 있지 않으면 Play Store에서 앱 페이지로 이동
-                val marketUri = Uri.parse("market://details?id=$packageName")
-                val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
-                startActivity(marketIntent)
+                // 앱이 설치되어 있지 않은 경우, 구글 플레이에서 앱을 찾아 사용자에게 앱 설치를 제안합니다.
+                val playStoreUri = Uri.parse("market://details?id=$packageName")
+                val goToPlayStore = Intent(Intent.ACTION_VIEW, playStoreUri)
+                if (goToPlayStore.resolveActivity(packageManager) != null) {
+                    startActivity(goToPlayStore)
+                }
             }
         }
 

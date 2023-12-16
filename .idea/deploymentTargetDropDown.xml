@@ -6,12 +6,12 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="$USER_HOME$/.android/avd/V50_Emulator_API_33.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="LMV500N508cbdc2" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-12-16T12:48:58.298772Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-12-16T17:58:18.844596Z" />
   </component>
 </project>

@@ -30,7 +30,9 @@ class ArFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+//        val recent_building : String? = PreferenceHelper.getRecentDestinations(this.requireContext())[0]
 //        unityIntent = Intent(activity, UnityPlayerActivity::class.java)
+//        unityIntent.putExtra("target", recent_building)
 //        startActivity(unityIntent)
     }
 

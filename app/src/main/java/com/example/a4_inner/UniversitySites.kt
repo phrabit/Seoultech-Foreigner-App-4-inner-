@@ -50,7 +50,7 @@ object UniversitySites {
     val techno_park = Node("(7) Seoul Technopark", LatLng.from(37.634251, 127.080442))
     val bungeobang = Node("(11) Bungeobang Pond", LatLng.from(37.633235, 127.078404))
     val bungeobang_threeway_intersection = Node("bungeobang_threeway_intersection", LatLng.from(37.632726, 127.078801))
-    val dasan_bus_stop = Node("bungeobang_threeway_intersection", LatLng.from(37.632206, 127.078631))
+    val dasan_bus_stop = Node("dasan_bus_stop", LatLng.from(37.632206, 127.078631))
     val dasan_hall = Node("(2) Dasan Hall", LatLng.from(37.631979, 127.077856))
     val changhak_hall = Node("(3) Changhak Hall", LatLng.from(37.632005, 127.079345))
     val stair_front_changhak_hall = Node("stair_front_changhak_hall", LatLng.from(37.631621, 127.079162))

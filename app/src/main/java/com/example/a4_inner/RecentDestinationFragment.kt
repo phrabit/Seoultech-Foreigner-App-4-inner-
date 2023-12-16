@@ -58,7 +58,7 @@ class RecentDestinationFragment : Fragment() {
                     map_fragment = MapFragment.newInstance(binding.recentDestination1Btn.text.toString())
                 }
                 else{
-                    (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination1Btn.text.toString())
+                    (map_fragment as? MapFragment)?.fetchLocation(binding.recentDestination1Btn.text.toString())
                 }
                 (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment)
             }
@@ -74,7 +74,7 @@ class RecentDestinationFragment : Fragment() {
                     map_fragment = MapFragment.newInstance(binding.recentDestination2Btn.text.toString())
                 }
                 else{
-                    (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination2Btn.text.toString())
+                    (map_fragment as? MapFragment)?.fetchLocation(binding.recentDestination2Btn.text.toString())
                 }
                 (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment!!)
             }
@@ -90,7 +90,7 @@ class RecentDestinationFragment : Fragment() {
                     map_fragment = MapFragment.newInstance(binding.recentDestination3Btn.text.toString())
                 }
                 else{
-                    (map_fragment as? MapFragment)?.performActionBasedOnSelection(binding.recentDestination3Btn.text.toString())
+                    (map_fragment as? MapFragment)?.fetchLocation(binding.recentDestination3Btn.text.toString())
                 }
                 (requireActivity() as? NaviActivity)?.setFragment(TAG_MAP, map_fragment!!)
             }

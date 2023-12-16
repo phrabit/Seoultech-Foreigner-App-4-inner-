@@ -1,7 +1,12 @@
 package com.example.a4_inner
 
 //import android.R
+import android.content.Context
+import android.content.pm.PackageManager
+import android.content.pm.PermissionGroupInfo
 import android.graphics.Color
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,9 +15,13 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.a4_inner.databinding.FragmentMapBinding
 import com.example.a4_inner.databinding.SelectBuildingBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Task
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -30,6 +39,7 @@ import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.route.RouteLineStyles
 import com.kakao.vectormap.route.RouteLineStylesSet
+import java.security.Permission
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,6 +60,8 @@ class MapFragment : Fragment() {
     lateinit var label_layer: LabelLayer
     lateinit var marker_style: LabelStyles
     private var building_selected: String = ""
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -67,6 +79,7 @@ class MapFragment : Fragment() {
         binding.pathFindBtn.setOnClickListener{
             showDialog()
         }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         mapView.start(object : MapLifeCycleCallback() {
 
@@ -92,7 +105,7 @@ class MapFragment : Fragment() {
 //                    label_layer.addLabel(LabelOptions.from(node.location).setStyles(marker_style))
 //                }
                 if(param1 != null){
-                    performActionBasedOnSelection(param1.toString())
+                    fetchLocation(param1.toString())
                 }
             }
 
@@ -141,36 +154,17 @@ class MapFragment : Fragment() {
         }
         builder.setView(dialogBinding.root)
         builder.setPositiveButton("OK") { _, _ ->
-            performActionBasedOnSelection(building_selected)
-            PreferenceHelper.setRecentDestinations(this.requireContext(), building_selected)
+            fetchLocation(building_selected)
+            PreferenceHelper.setRecentDestinations(requireContext(), building_selected)
         }
         builder.setNegativeButton("Cancle"){ _, _ ->
 
         }
         builder.show()
     }
-    public fun performActionBasedOnSelection(itemSelected: String) {
-//        val stylesSet: RouteLineStylesSet = RouteLineStylesSet.from(
-//            "blueStyles",
-//            RouteLineStyles.from(RouteLineStyle.from(30.toFloat(), Color.BLUE))
-//        )
-//        for(edge in UniversityEdges.edges){
-//            var latlngs:MutableList<LatLng> = mutableListOf()
-//            latlngs.add(edge.to.location)
-//            latlngs.add(edge.from.location)
-//            val segment = RouteLineSegment.from(
-//                latlngs
-//            )
-//                .setStyles(stylesSet.getStyles(0))
-//
-//            val options = RouteLineOptions.from(segment)
-//                .setStylesSet(stylesSet)
-//
-//            val routeLine = line_layer.addRouteLine(options)
-//        }
-
+    public fun drawShortestPath(user_location: MutableList<Double>, itemSelected: String) {
         line_layer.removeAll()
-        val crt_latlng = LatLng.from(37.630293, 127.076929)
+        val crt_latlng = LatLng.from(user_location[0], user_location[1])
         var target: Node? = null
         for(node in UniversitySites.nodes){
             if(node.name == itemSelected) target = node
@@ -195,6 +189,30 @@ class MapFragment : Fragment() {
             .setStylesSet(stylesSet)
 
         val routeLine = line_layer.addRouteLine(options)
+    }
+
+    public fun fetchLocation(itemSelected: String) {
+        var user_location : MutableList<Double>?= mutableListOf<Double>()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 101)
+            return
+        }
+
+        val task: Task<Location> = fusedLocationClient.lastLocation
+        task.addOnSuccessListener { location ->
+            if (location != null) {
+                // Use the location object as needed
+                // 이 위치를 사용하여 필요한 작업을 수행합니다.
+                user_location?.add(location.latitude)
+                user_location?.add(location.longitude)
+                drawShortestPath(user_location!!, itemSelected)
+            }
+        }
     }
     companion object {
         /**
