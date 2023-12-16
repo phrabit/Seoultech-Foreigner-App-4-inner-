@@ -1,12 +1,16 @@
 package com.example.a4_inner
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.a4_inner.databinding.ActivityLogInBinding
@@ -33,27 +37,13 @@ class LogInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLogInBinding
 
-    // login variables
-//    lateinit var username: EditText
-//    lateinit var password: EditText
-//    lateinit var loginButton: Button
-
     // google login
     private val auth = Firebase.auth
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)!!
-                    firebaseAuthWithGoogle(account.idToken!!)
-                    Log.d("ITM", "firebaseAuthWithGoogle: " + account.id)
-                } catch (e: ApiException) {
-                    Log.w("ITM", "Google sign in failed: " + e.message)
-                }
-            }
+            handleGoogleSignInResult(result)
         }
 
     // 페이지 초기화시에 현재 사용자가 로그인 되어있는지 확인
@@ -71,14 +61,11 @@ class LogInActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
+//            .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         binding.goNavi.setOnClickListener {
-//            val intent = Intent(this, NaviActivity::class.java)
-//            startActivity(intent) // Add this line to start the activity
-//            finish()
 
             val db = FirebaseFirestore.getInstance()
 
@@ -118,13 +105,7 @@ class LogInActivity : AppCompatActivity() {
         }
 
         binding.loginButton.setOnClickListener {
-            if (binding.username.text.toString() == "user" && binding.password.text.toString() == "1234") {
-
-                // 수호를 위한 로그인 id : user, pw : 1234
-                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Login Failed!", Toast.LENGTH_SHORT).show()
-            }
+            performLocalLogin()
         }
 
         binding.googleLoginButton.setOnClickListener {
@@ -132,10 +113,20 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
+    // local login
+    private fun performLocalLogin() {
+        if (binding.username.text.toString() == "user" && binding.password.text.toString() == "1234") {
+            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Login Failed!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     // 로그인 시 페이지를 변경하는 코드(UI update)
     private fun updateUI(user: FirebaseUser?) { //update ui code here
         if (user != null) {
             userAssign(user)
+            FireBase.firebase_online = true
             val intent = Intent(this, NaviActivity::class.java)
             intent.putExtra("fromLogin", "true")
             startActivity(intent)
@@ -153,6 +144,7 @@ class LogInActivity : AppCompatActivity() {
     }
 
     private fun gSignInFun() {
+        Log.w("ITM","$googleSignInClient")
         googleSignInClient.signOut()
         val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
@@ -175,6 +167,32 @@ class LogInActivity : AppCompatActivity() {
                     updateUI(null)
                 }
             }
+    }
+
+    private fun handleGoogleSignInResult(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)!!
+                firebaseAuthWithGoogle(account.idToken!!)
+                Log.d("ITM", "firebaseAuthWithGoogle: " + account.id)
+            } catch (e: ApiException) {
+                Log.w("ITM", "Google sign in failed: " + e.message)
+            }
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle("Offline Login")
+                .setMessage("You are offline. Would you like to try offline login?")
+                .setPositiveButton("Yes") { _, _ ->
+                    // Offline 로그인 수행
+                    FireBase.firebase_online = false
+                    val intent = Intent(this, NaviActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        }
     }
 
     private fun userAssign(user: FirebaseUser) {

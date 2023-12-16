@@ -5,50 +5,35 @@
     android:layout_height="50dp"
     android:layout_margin="5dp"
     android:layout_marginBottom="5dp"
-    android:orientation="vertical"
-    >
+    android:background="@drawable/circle_shape"
+    android:paddingHorizontal="15dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <!-- 항목을 어떻게 보여줄지 item View 생성> -->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/st_blue"
-        android:orientation="horizontal"
-        android:padding="5dp">
+    <ImageView
+        android:id="@+id/imgUser_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:background="@drawable/user" />
 
-        <ImageView
-            android:id="@+id/imgUser_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:background="@drawable/user" />
+    <TextView
+        android:id="@+id/comments"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:textColor="#000000"
+        android:textSize="14dp" />
 
-        <LinearLayout
-            android:layout_width="328dp"
-            android:layout_height="38dp"
-            android:layout_marginLeft="5dp"
-            android:background="#E6E6E6"
-            android:orientation="vertical">
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="30"
+        android:src="@android:drawable/ic_delete" />
 
-            <TextView
-                android:id="@+id/comments"
-                android:layout_width="327dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="2dp"
-                android:background="@color/st_gray"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:textColor="#000000"
-                android:textSize="14dp" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="30"
-            android:src="@android:drawable/ic_delete" />
-    </LinearLayout>
 </LinearLayout>
