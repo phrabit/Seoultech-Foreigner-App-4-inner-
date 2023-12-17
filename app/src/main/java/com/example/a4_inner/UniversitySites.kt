@@ -183,77 +183,40 @@ object UniversityEdges{
 }
 
 object Dijkstra {
-//    fun dijkstra(currentLocation: LatLng, end: Node): List<Node> {
-//        // 현재 위치에서 가장 가까운 노드를 찾습니다.
-//        val start = nodes.minByOrNull { getDistance(currentLocation, it.location) }!!
-//
-//        val dist = nodes.associateWith { Double.MAX_VALUE }.toMutableMap()
-//        val previous = nodes.associateWith { null }.toMutableMap<Node, Node?>()
-//
-//        dist[start] = 0.0
-//        val unvisited = nodes.toMutableList()
-//
-//        while (unvisited.isNotEmpty()) {
-//            val current = unvisited.minByOrNull { dist[it]!! }!!
-//            unvisited.remove(current)
-//
-//            val currentEdges = edges.filter { it.from == current }
-//            for (edge in currentEdges) {
-//                val alt = dist[current]!! + edge.weight
-//                if (alt < dist[edge.to]!!) {
-//                    dist[edge.to] = alt
-//                    previous[edge.to] = current
-//                }
-//            }
-//        }
-//
-//        // 경로 생성
-//        val path = mutableListOf<Node>()
-//        var current: Node? = end
-//        while (current != null) {
-//            path.add(current)
-//            current = previous[current]
-//        }
-//        path.reverse()
-//
-//        return path
-//    }
-fun dijkstra(currentLocation: LatLng, end: Node, edges: List<Edge>): List<Node> {
-    val nodes = edges.flatMap { listOf(it.from, it.to) }.distinct()
+    fun dijkstra(currentLocation: LatLng, end: Node, edges: List<Edge>): List<Node> {
+        val nodes = edges.flatMap { listOf(it.from, it.to) }.distinct()
 
-    // 현재 위치에서 가장 가까운 노드를 찾습니다.
-    val start = nodes.minByOrNull { getDistance(currentLocation, it.location) }!!
+        val start = nodes.minByOrNull { getDistance(currentLocation, it.location) }!!
 
-    val dist = nodes.associateWith { Double.MAX_VALUE }.toMutableMap()
-    val previous = nodes.associateWith { null }.toMutableMap<Node, Node?>()
+        val dist = nodes.associateWith { Double.MAX_VALUE }.toMutableMap()
+        val previous = nodes.associateWith { null }.toMutableMap<Node, Node?>()
 
-    dist[start] = 0.0
-    val unvisited = nodes.toMutableList()
+        dist[start] = 0.0
+        val unvisited = nodes.toMutableList()
 
-    while (unvisited.isNotEmpty()) {
-        val current = unvisited.minByOrNull { dist[it]!! }!!
-        unvisited.remove(current)
+        while (unvisited.isNotEmpty()) {
+            val current = unvisited.minByOrNull { dist[it]!! }!!
+            unvisited.remove(current)
 
-        val currentEdges = edges.filter { it.from == current || it.to == current }
-        for (edge in currentEdges) {
-            val neighbor = if (edge.from == current) edge.to else edge.from
-            val alt = dist[current]!! + edge.weight
-            if (alt < dist[neighbor]!!) {
-                dist[neighbor] = alt
-                previous[neighbor] = current
+            val currentEdges = edges.filter { it.from == current || it.to == current }
+            for (edge in currentEdges) {
+                val neighbor = if (edge.from == current) edge.to else edge.from
+                val alt = dist[current]!! + edge.weight
+                if (alt < dist[neighbor]!!) {
+                    dist[neighbor] = alt
+                    previous[neighbor] = current
+                }
             }
         }
-    }
 
-    // 경로 생성
-    val path = mutableListOf<Node>()
-    var current: Node? = end
-    while (current != null) {
-        path.add(current)
-        current = previous[current]
-    }
-    path.reverse()
+        val path = mutableListOf<Node>()
+        var current: Node? = end
+        while (current != null) {
+            path.add(current)
+            current = previous[current]
+        }
+        path.reverse()
 
-    return path
-}
+        return path
+    }
 }
