@@ -35,14 +35,12 @@
     <EditText
         android:id="@+id/title_insert"
         android:layout_width="353dp"
-        android:layout_height="38dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="144dp"
-        android:ems="10"
         android:hint="Title"
         android:inputType="text"
         android:textColorHint="#DCD9D9"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.534"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
