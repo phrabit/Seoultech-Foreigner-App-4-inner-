@@ -61,45 +61,6 @@ class LogInActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        binding.goNavi.setOnClickListener {
-
-            val db = FirebaseFirestore.getInstance()
-
-            db.collection("users").document("eSDQ46aVtvflWf3lFXAhXuAnxKp1")
-                .get()
-                .addOnSuccessListener { document ->
-                    if (document != null) {
-                        Log.d("ITM", "DocumentSnapshot data: ${document.data}")
-
-                        // Firebase에서 가져온 문서 데이터를 사용하여 CurrentUser를 초기화합니다.
-                        val userUid = document.getString("userUid") // uid 필드
-                        val name = document.getString("name") // name 필드
-                        val creationDate = document.getTimestamp("creationDate") // creationDate 필드
-                        val email = document.getString("email") // email 필드
-                        val photoUrl = document.getString("photoUrl") // photoUrl 필드
-
-                        if (userUid != null && name != null && creationDate != null && email != null && photoUrl != null) {
-                            CurrentUser.initializeUser(
-                                userUid,
-                                name,
-                                creationDate,
-                                email,
-                                Uri.parse(photoUrl)
-                            )
-
-                            updateUI_suho()
-                        } else {
-                            Log.d("ITM", "One or more fields are missing in the document")
-                        }
-                    } else {
-                        Log.d("ITM", "No such document")
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.d("ITM", "get failed with ", exception)
-                }
-        }
-
         binding.loginButton.setOnClickListener {
             performLocalLogin()
         }
@@ -126,15 +87,6 @@ class LogInActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-    }
-
-    private fun updateUI_suho() { //update ui code here
-        Log.d("ITM", "updateUI_suho is called")
-        val intent = Intent(this, NaviActivity::class.java)
-        intent.putExtra("fromLogin", "suho")
-        Log.d("ITM", "fromLogin extra added to intent: ${intent.getStringExtra("fromLogin")}")
-        startActivity(intent)
-        finish()
     }
 
     private fun gSignInFun() {

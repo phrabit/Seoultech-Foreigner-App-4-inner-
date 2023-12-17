@@ -79,16 +79,6 @@
                 android:textColor="@color/st_blue"
                 android:textSize="15dp" />
 
-            <Button
-                android:id="@+id/goNavi"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:backgroundTint="@color/white"
-                android:text="Let's go to Navi"
-                android:textAlignment="center"
-                android:textColor="@color/st_blue"
-                android:textSize="15dp" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
